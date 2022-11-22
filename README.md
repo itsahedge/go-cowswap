@@ -22,4 +22,4 @@ To start using this SDK...
 
 ### Instantiating the SDK
 
-Once you have all the necessary dependencies, you can follow the following setup steps to get started with SDK read-only functions:
+WIP
