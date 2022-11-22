@@ -121,6 +121,10 @@ type AuctionResponse struct {
 	} `json:"rewards"`
 }
 
+type NativePriceResponse struct {
+	Price float64 `json:"price"`
+}
+
 // CounterOrder represents a Gnosis CounterOrder.
 type CounterOrder struct {
 	SellToken         string `json:"sellToken,omitempty"`

@@ -65,3 +65,16 @@ func TestClient_GetAuction(t *testing.T) {
 	}
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+func TestClient_GetNativePrice(t *testing.T) {
+	client := NewClient(options)
+	res, statusCode, err := client.GetNativePrice(context.Background(), GNO_TOKEN)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
