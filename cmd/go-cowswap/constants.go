@@ -25,6 +25,13 @@ const (
 	GOERLI_ZRX_TOKEN  = "0xe4E81Fa6B16327D4B78CFEB83AAdE04bA7075165"
 )
 
+const (
+	WETH_TOKEN = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+	COW_TOKEN  = "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab"
+	USDC_TOKEN = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+	GNO_TOKEN  = "0x6810e776880c02933d47db1b9fc05908e5386b96"
+)
+
 var NetworkConfig = map[string]string{
 	"mainnet": MAINNET,
 	"goerli":  GOERLI,
