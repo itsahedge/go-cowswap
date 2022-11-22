@@ -78,3 +78,20 @@ func TestClient_GetNativePrice(t *testing.T) {
 	}
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+
+func TestClient_GetTrades(t *testing.T) {
+	client := NewClient(options)
+	opts := &GetTrades{
+		Owner: "",
+	}
+	res, statusCode, err := client.GetTrades(context.Background(), opts)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
