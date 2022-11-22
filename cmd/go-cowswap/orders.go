@@ -26,3 +26,27 @@ func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*types.O
 	}
 	return &dataRes, statusCode, nil
 }
+
+type OrdersPaginated struct {
+	Offset string
+	Limit  string
+}
+
+func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*types.OrdersByUserResponse, int, error) {
+	endpoint := fmt.Sprintf("/account/%s/orders", userAddress)
+	var queries = make(map[string]interface{})
+	if opts != nil {
+		if opts.Limit != "" {
+			queries["limit"] = opts.Limit
+		}
+		if opts.Offset != "" {
+			queries["offset"] = opts.Offset
+		}
+	}
+	var dataRes types.OrdersByUserResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil, queries)
+	if err != nil {
+		return nil, statusCode, err
+	}
+	return &dataRes, statusCode, nil
+}

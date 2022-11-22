@@ -123,3 +123,21 @@ func TestClient_GetOrdersByTxHash(t *testing.T) {
 	}
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+func TestClient_GetOrdersByUser(t *testing.T) {
+	client := NewClient(options)
+	userAddress := ""
+	opts := &OrdersPaginated{
+		Limit:  "3",
+		Offset: "1",
+	}
+	res, statusCode, err := client.GetOrdersByUser(context.Background(), userAddress, opts)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
