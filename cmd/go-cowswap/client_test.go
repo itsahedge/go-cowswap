@@ -95,3 +95,17 @@ func TestClient_GetTrades(t *testing.T) {
 	}
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+func TestClient_GetOrdersByUid(t *testing.T) {
+	client := NewClient(options)
+	uid := ""
+	res, statusCode, err := client.GetOrdersByUid(context.Background(), uid)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
