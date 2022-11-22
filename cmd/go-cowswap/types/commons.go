@@ -243,6 +243,40 @@ type OrderByUidResponse struct {
 	OnchainUser string `json:"onchainUser"`
 }
 
+type OrdersByTxHashResponse []struct {
+	CreationDate                 time.Time   `json:"creationDate"`
+	Owner                        string      `json:"owner"`
+	UID                          string      `json:"uid"`
+	AvailableBalance             interface{} `json:"availableBalance"`
+	ExecutedBuyAmount            string      `json:"executedBuyAmount"`
+	ExecutedSellAmount           string      `json:"executedSellAmount"`
+	ExecutedSellAmountBeforeFees string      `json:"executedSellAmountBeforeFees"`
+	ExecutedFeeAmount            string      `json:"executedFeeAmount"`
+	Invalidated                  bool        `json:"invalidated"`
+	Status                       string      `json:"status"`
+	Class                        string      `json:"class"`
+	SettlementContract           string      `json:"settlementContract"`
+	FullFeeAmount                string      `json:"fullFeeAmount"`
+	IsLiquidityOrder             bool        `json:"isLiquidityOrder"`
+	SellToken                    string      `json:"sellToken"`
+	BuyToken                     string      `json:"buyToken"`
+	Receiver                     string      `json:"receiver"`
+	SellAmount                   string      `json:"sellAmount"`
+	BuyAmount                    string      `json:"buyAmount"`
+	ValidTo                      int         `json:"validTo"`
+	AppData                      string      `json:"appData"`
+	FeeAmount                    string      `json:"feeAmount"`
+	Kind                         string      `json:"kind"`
+	PartiallyFillable            bool        `json:"partiallyFillable"`
+	SellTokenBalance             string      `json:"sellTokenBalance"`
+	BuyTokenBalance              string      `json:"buyTokenBalance"`
+	SigningScheme                string      `json:"signingScheme"`
+	Signature                    string      `json:"signature"`
+	Interactions                 struct {
+		Pre []interface{} `json:"pre"`
+	} `json:"interactions"`
+}
+
 // CounterOrder represents a Gnosis CounterOrder.
 type CounterOrder struct {
 	SellToken         string `json:"sellToken,omitempty"`

@@ -109,3 +109,17 @@ func TestClient_GetOrdersByUid(t *testing.T) {
 	}
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+func TestClient_GetOrdersByTxHash(t *testing.T) {
+	client := NewClient(options)
+	txHash := ""
+	res, statusCode, err := client.GetOrdersByTxHash(context.Background(), txHash)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
