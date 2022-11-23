@@ -5,19 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"testing"
 )
 
-var options = types.Options{
-	Network:    "mainnet",
-	Host:       NetworkConfig["mainnet"],
-	RpcUrl:     "https://alchemyapi.io",
-	EthAddress: "",
-	PrivateKey: "",
-}
-
 func TestNewClient(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	res, statusCode, err := client.Version(context.Background())
 	if err != nil {
 		t.Error(err)
@@ -26,10 +19,10 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestClient_GetQuote(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	o := &types.QuoteReq{
-		SellToken:           WETH_TOKEN,
-		BuyToken:            COW_TOKEN,
+		SellToken:           util.WETH_TOKEN,
+		BuyToken:            util.COW_TOKEN,
 		Receiver:            "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
 		AppData:             "0x0000000000000000000000000000000000000000000000000000000000000000",
 		PartiallyFillable:   false,
@@ -54,7 +47,7 @@ func TestClient_GetQuote(t *testing.T) {
 }
 
 func TestClient_GetAuction(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	res, statusCode, err := client.GetAuction(context.Background())
 	if err != nil {
 		t.Error(err)
@@ -67,8 +60,8 @@ func TestClient_GetAuction(t *testing.T) {
 }
 
 func TestClient_GetNativePrice(t *testing.T) {
-	client := NewClient(options)
-	res, statusCode, err := client.GetNativePrice(context.Background(), GNO_TOKEN)
+	client := NewClient(util.Options)
+	res, statusCode, err := client.GetNativePrice(context.Background(), util.GNO_TOKEN)
 	if err != nil {
 		t.Error(err)
 	}
@@ -79,9 +72,21 @@ func TestClient_GetNativePrice(t *testing.T) {
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
 
+func TestClient_GetSolverAuctionById(t *testing.T) {
+	client := NewClient(util.Options)
+	res, statusCode, err := client.GetSolverAuctionById(context.Background(), 100)
+	if err != nil {
+		t.Error(err)
+	}
+	r, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
 
 func TestClient_GetTrades(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	opts := &GetTrades{
 		Owner: "",
 	}
@@ -97,7 +102,7 @@ func TestClient_GetTrades(t *testing.T) {
 }
 
 func TestClient_GetOrdersByUid(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	uid := ""
 	res, statusCode, err := client.GetOrdersByUid(context.Background(), uid)
 	if err != nil {
@@ -111,7 +116,7 @@ func TestClient_GetOrdersByUid(t *testing.T) {
 }
 
 func TestClient_GetOrdersByTxHash(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	txHash := ""
 	res, statusCode, err := client.GetOrdersByTxHash(context.Background(), txHash)
 	if err != nil {
@@ -125,7 +130,7 @@ func TestClient_GetOrdersByTxHash(t *testing.T) {
 }
 
 func TestClient_GetOrdersByUser(t *testing.T) {
-	client := NewClient(options)
+	client := NewClient(util.Options)
 	userAddress := ""
 	opts := &OrdersPaginated{
 		Limit:  "3",
