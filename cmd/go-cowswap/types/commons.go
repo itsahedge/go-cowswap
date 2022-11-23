@@ -125,6 +125,11 @@ type NativePriceResponse struct {
 	Price float64 `json:"price"`
 }
 
+type GetTrades struct {
+	Owner    string
+	OrderUid string
+}
+
 type TradesResponse []struct {
 	BlockNumber          int    `json:"blockNumber"`
 	LogIndex             int    `json:"logIndex"`
@@ -275,6 +280,11 @@ type OrdersByTxHashResponse []struct {
 	Interactions                 struct {
 		Pre []interface{} `json:"pre"`
 	} `json:"interactions"`
+}
+
+type OrdersPaginated struct {
+	Offset string
+	Limit  string
 }
 
 type OrdersByUserResponse []struct {
