@@ -1,8 +1,9 @@
-package go_cowswap
+package util
 
 import (
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
 )
 
 const (
@@ -38,7 +39,16 @@ var NetworkConfig = map[string]string{
 	"xdai":    GNOSIS_CHAIN,
 }
 
-var eip712OrderTypes = apitypes.Types{
+// Default options
+var Options = types.Options{
+	Network:    "mainnet",
+	Host:       NetworkConfig["mainnet"],
+	RpcUrl:     "https://rpc.flashbots.net",
+	EthAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+	PrivateKey: "",
+}
+
+var Eip712OrderTypes = apitypes.Types{
 	"EIP712Domain": {
 		{
 			Name: "name",
@@ -109,7 +119,7 @@ var eip712OrderTypes = apitypes.Types{
 	},
 }
 
-var domain = apitypes.TypedDataDomain{
+var Domain = apitypes.TypedDataDomain{
 	Name:              "Gnosis Protocol",
 	Version:           "v2",
 	ChainId:           math.NewHexOrDecimal256(1),

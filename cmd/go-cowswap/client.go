@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
@@ -22,20 +23,22 @@ type Client struct {
 
 	RpcUrl       string
 	EthKeySinger *util.EthKeySinger
+
+	EthClient *ethclient.Client
 }
 
 func NewClient(options types.Options) *Client {
 	client := &Client{
 		Http:             &http.Client{},
-		Eip712OrderTypes: eip712OrderTypes,
-		TypedDataDomain:  domain,
+		Eip712OrderTypes: util.Eip712OrderTypes,
+		TypedDataDomain:  util.Domain,
 		Network:          options.Network,
 		Host:             options.Host,
 	}
 
 	if options.Network != "" {
 		client.Network = options.Network
-		client.Host = NetworkConfig[options.Network]
+		client.Host = util.NetworkConfig[options.Network]
 	}
 
 	if options.RpcUrl != "" {
@@ -45,6 +48,12 @@ func NewClient(options types.Options) *Client {
 	if options.PrivateKey != "" {
 		client.EthKeySinger = util.NewSigner(options.PrivateKey)
 	}
+
+	ethClient, err := ethclient.Dial(client.RpcUrl)
+	if err != nil {
+		return nil
+	}
+	client.EthClient = ethClient
 
 	return client
 }

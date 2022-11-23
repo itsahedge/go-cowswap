@@ -8,31 +8,35 @@ import (
 )
 
 func (c *Client) GetOrdersByUid(ctx context.Context, uid string) (*types.OrderByUidResponse, int, error) {
+	if uid == "" {
+		return nil, 404, errors.New("order UID not provided")
+	}
 	endpoint := fmt.Sprintf("/orders/%s", uid)
 	var dataRes types.OrderByUidResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("Order UID not found.")
+		return nil, statusCode, errors.New("order UID not found")
 	}
 	return &dataRes, statusCode, nil
 }
 
 func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*types.OrdersByTxHashResponse, int, error) {
+	if txHash == "" {
+		return nil, 404, errors.New("transaction hash not provided")
+	}
 	endpoint := fmt.Sprintf("/transactions/%s/orders", txHash)
 	var dataRes types.OrdersByTxHashResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("Transaction Hash not found.")
+		return nil, statusCode, errors.New("transaction hash not found")
 	}
 	return &dataRes, statusCode, nil
 }
 
-type OrdersPaginated struct {
-	Offset string
-	Limit  string
-}
-
-func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*types.OrdersByUserResponse, int, error) {
+func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *types.OrdersPaginated) (*types.OrdersByUserResponse, int, error) {
+	if userAddress == "" {
+		return nil, 404, errors.New("user address not provided")
+	}
 	endpoint := fmt.Sprintf("/account/%s/orders", userAddress)
 	var queries = make(map[string]interface{})
 	if opts != nil {
