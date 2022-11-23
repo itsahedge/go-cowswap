@@ -125,6 +125,192 @@ type NativePriceResponse struct {
 	Price float64 `json:"price"`
 }
 
+type TradesResponse []struct {
+	BlockNumber          int    `json:"blockNumber"`
+	LogIndex             int    `json:"logIndex"`
+	OrderUID             string `json:"orderUid"`
+	BuyAmount            string `json:"buyAmount"`
+	SellAmount           string `json:"sellAmount"`
+	SellAmountBeforeFees string `json:"sellAmountBeforeFees"`
+	Owner                string `json:"owner"`
+	BuyToken             string `json:"buyToken"`
+	SellToken            string `json:"sellToken"`
+	TxHash               string `json:"txHash"`
+}
+
+type SolverCompetitionResponse struct {
+	AuctionID                  int         `json:"auctionId"`
+	TransactionHash            interface{} `json:"transactionHash"`
+	GasPrice                   float64     `json:"gasPrice"`
+	AuctionStartBlock          int         `json:"auctionStartBlock"`
+	LiquidityCollectedBlock    int         `json:"liquidityCollectedBlock"`
+	CompetitionSimulationBlock int         `json:"competitionSimulationBlock"`
+	Auction                    struct {
+		Orders []string `json:"orders"`
+		Prices struct {
+			ZeroX2A54Ba2964C8Cd459Dc568853F79813A60761B58 string `json:"0x2a54ba2964c8cd459dc568853f79813a60761b58"`
+			ZeroX57Ab1Ec28D129707052Df4Df418D58A2D46D5F51 string `json:"0x57ab1ec28d129707052df4df418d58a2d46d5f51"`
+			ZeroX6B175474E89094C44Da98B954Eedeac495271D0F string `json:"0x6b175474e89094c44da98b954eedeac495271d0f"`
+			ZeroX853D955Acef822Db058Eb8505911Ed77F175B99E string `json:"0x853d955acef822db058eb8505911ed77f175b99e"`
+			ZeroXa0B86991C6218B36C1D19D4A2E9Eb0Ce3606Eb48 string `json:"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"`
+			ZeroXae7Ab96520De3A18E5E111B5Eaab095312D7Fe84 string `json:"0xae7ab96520de3a18e5e111b5eaab095312d7fe84"`
+			ZeroXc02Aaa39B223Fe8D0A0E5C4F27Ead9083C756Cc2 string `json:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"`
+			ZeroXdac17F958D2Ee523A2206206994597C13D831Ec7 string `json:"0xdac17f958d2ee523a2206206994597c13d831ec7"`
+			ZeroXebd9D99A3982D547C5Bb4Db7E3B1F9F14B67Eb83 string `json:"0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83"`
+			ZeroXeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee string `json:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"`
+		} `json:"prices"`
+	} `json:"auction"`
+	Solutions []struct {
+		Solver    string `json:"solver"`
+		Objective struct {
+			Total   float64 `json:"total"`
+			Surplus float64 `json:"surplus"`
+			Fees    any     `json:"fees"`
+			Cost    any     `json:"cost"`
+			Gas     int     `json:"gas"`
+		} `json:"objective"`
+		ClearingPrices struct {
+			ZeroXc02Aaa39B223Fe8D0A0E5C4F27Ead9083C756Cc2 string `json:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"`
+			ZeroXebd9D99A3982D547C5Bb4Db7E3B1F9F14B67Eb83 string `json:"0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83"`
+			ZeroXeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee string `json:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"`
+		} `json:"clearingPrices,omitempty"`
+		Orders []struct {
+			ID             string `json:"id"`
+			ExecutedAmount string `json:"executedAmount"`
+		} `json:"orders"`
+		CallData        string `json:"callData"`
+		ClearingPrices0 struct {
+			ZeroX2A54Ba2964C8Cd459Dc568853F79813A60761B58 string `json:"0x2a54ba2964c8cd459dc568853f79813a60761b58"`
+			ZeroXa0B86991C6218B36C1D19D4A2E9Eb0Ce3606Eb48 string `json:"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"`
+		} `json:"clearingPrices,omitempty"`
+		ClearingPrices1 struct {
+			ZeroX2A54Ba2964C8Cd459Dc568853F79813A60761B58 string `json:"0x2a54ba2964c8cd459dc568853f79813a60761b58"`
+			ZeroXa0B86991C6218B36C1D19D4A2E9Eb0Ce3606Eb48 string `json:"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"`
+			ZeroXc02Aaa39B223Fe8D0A0E5C4F27Ead9083C756Cc2 string `json:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"`
+			ZeroXebd9D99A3982D547C5Bb4Db7E3B1F9F14B67Eb83 string `json:"0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83"`
+			ZeroXeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee string `json:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"`
+		} `json:"clearingPrices,omitempty"`
+		ClearingPrices2 struct {
+			ZeroX2A54Ba2964C8Cd459Dc568853F79813A60761B58 string `json:"0x2a54ba2964c8cd459dc568853f79813a60761b58"`
+			ZeroXa0B86991C6218B36C1D19D4A2E9Eb0Ce3606Eb48 string `json:"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"`
+			ZeroXc02Aaa39B223Fe8D0A0E5C4F27Ead9083C756Cc2 string `json:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"`
+			ZeroXebd9D99A3982D547C5Bb4Db7E3B1F9F14B67Eb83 string `json:"0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83"`
+			ZeroXeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee string `json:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"`
+		} `json:"clearingPrices,omitempty"`
+		ClearingPrices3 struct {
+			ZeroX2A54Ba2964C8Cd459Dc568853F79813A60761B58 string `json:"0x2a54ba2964c8cd459dc568853f79813a60761b58"`
+			ZeroXa0B86991C6218B36C1D19D4A2E9Eb0Ce3606Eb48 string `json:"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"`
+			ZeroXc02Aaa39B223Fe8D0A0E5C4F27Ead9083C756Cc2 string `json:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"`
+			ZeroXebd9D99A3982D547C5Bb4Db7E3B1F9F14B67Eb83 string `json:"0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83"`
+			ZeroXeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee string `json:"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"`
+		} `json:"clearingPrices,omitempty"`
+	} `json:"solutions"`
+}
+
+type OrderByUidResponse struct {
+	SellToken                    string    `json:"sellToken"`
+	BuyToken                     string    `json:"buyToken"`
+	Receiver                     string    `json:"receiver"`
+	SellAmount                   string    `json:"sellAmount"`
+	BuyAmount                    string    `json:"buyAmount"`
+	ValidTo                      int       `json:"validTo"`
+	AppData                      string    `json:"appData"`
+	FeeAmount                    string    `json:"feeAmount"`
+	Kind                         string    `json:"kind"`
+	PartiallyFillable            bool      `json:"partiallyFillable"`
+	SellTokenBalance             string    `json:"sellTokenBalance"`
+	BuyTokenBalance              string    `json:"buyTokenBalance"`
+	SigningScheme                string    `json:"signingScheme"`
+	Signature                    string    `json:"signature"`
+	From                         string    `json:"from"`
+	QuoteID                      int       `json:"quoteId"`
+	CreationTime                 time.Time `json:"creationTime"`
+	Owner                        string    `json:"owner"`
+	UID                          string    `json:"UID"`
+	AvailableBalance             string    `json:"availableBalance"`
+	ExecutedSellAmount           string    `json:"executedSellAmount"`
+	ExecutedSellAmountBeforeFees string    `json:"executedSellAmountBeforeFees"`
+	ExecutedBuyAmount            string    `json:"executedBuyAmount"`
+	ExecutedFeeAmount            string    `json:"executedFeeAmount"`
+	Invalidated                  bool      `json:"invalidated"`
+	Status                       string    `json:"status"`
+	FullFeeAmount                string    `json:"fullFeeAmount"`
+	IsLiquidityOrder             bool      `json:"isLiquidityOrder"`
+	EthflowData                  struct {
+		IsRefunded  bool `json:"isRefunded"`
+		UserValidTo int  `json:"userValidTo"`
+	} `json:"ethflowData"`
+	OnchainUser string `json:"onchainUser"`
+}
+
+type OrdersByTxHashResponse []struct {
+	CreationDate                 time.Time   `json:"creationDate"`
+	Owner                        string      `json:"owner"`
+	UID                          string      `json:"uid"`
+	AvailableBalance             interface{} `json:"availableBalance"`
+	ExecutedBuyAmount            string      `json:"executedBuyAmount"`
+	ExecutedSellAmount           string      `json:"executedSellAmount"`
+	ExecutedSellAmountBeforeFees string      `json:"executedSellAmountBeforeFees"`
+	ExecutedFeeAmount            string      `json:"executedFeeAmount"`
+	Invalidated                  bool        `json:"invalidated"`
+	Status                       string      `json:"status"`
+	Class                        string      `json:"class"`
+	SettlementContract           string      `json:"settlementContract"`
+	FullFeeAmount                string      `json:"fullFeeAmount"`
+	IsLiquidityOrder             bool        `json:"isLiquidityOrder"`
+	SellToken                    string      `json:"sellToken"`
+	BuyToken                     string      `json:"buyToken"`
+	Receiver                     string      `json:"receiver"`
+	SellAmount                   string      `json:"sellAmount"`
+	BuyAmount                    string      `json:"buyAmount"`
+	ValidTo                      int         `json:"validTo"`
+	AppData                      string      `json:"appData"`
+	FeeAmount                    string      `json:"feeAmount"`
+	Kind                         string      `json:"kind"`
+	PartiallyFillable            bool        `json:"partiallyFillable"`
+	SellTokenBalance             string      `json:"sellTokenBalance"`
+	BuyTokenBalance              string      `json:"buyTokenBalance"`
+	SigningScheme                string      `json:"signingScheme"`
+	Signature                    string      `json:"signature"`
+	Interactions                 struct {
+		Pre []interface{} `json:"pre"`
+	} `json:"interactions"`
+}
+
+type OrdersByUserResponse []struct {
+	CreationDate                 time.Time   `json:"creationDate"`
+	Owner                        string      `json:"owner"`
+	UID                          string      `json:"uid"`
+	AvailableBalance             interface{} `json:"availableBalance"`
+	ExecutedBuyAmount            string      `json:"executedBuyAmount"`
+	ExecutedSellAmount           string      `json:"executedSellAmount"`
+	ExecutedSellAmountBeforeFees string      `json:"executedSellAmountBeforeFees"`
+	ExecutedFeeAmount            string      `json:"executedFeeAmount"`
+	Invalidated                  bool        `json:"invalidated"`
+	Status                       string      `json:"status"`
+	Class                        string      `json:"class"`
+	SettlementContract           string      `json:"settlementContract"`
+	FullFeeAmount                string      `json:"fullFeeAmount"`
+	IsLiquidityOrder             bool        `json:"isLiquidityOrder"`
+	SellToken                    string      `json:"sellToken"`
+	BuyToken                     string      `json:"buyToken"`
+	Receiver                     string      `json:"receiver"`
+	SellAmount                   string      `json:"sellAmount"`
+	BuyAmount                    string      `json:"buyAmount"`
+	ValidTo                      int         `json:"validTo"`
+	AppData                      string      `json:"appData"`
+	FeeAmount                    string      `json:"feeAmount"`
+	Kind                         string      `json:"kind"`
+	PartiallyFillable            bool        `json:"partiallyFillable"`
+	SellTokenBalance             string      `json:"sellTokenBalance"`
+	BuyTokenBalance              string      `json:"buyTokenBalance"`
+	SigningScheme                string      `json:"signingScheme"`
+	Signature                    string      `json:"signature"`
+	Interactions                 struct {
+		Pre []interface{} `json:"pre"`
+	} `json:"interactions"`
+}
+
 // CounterOrder represents a Gnosis CounterOrder.
 type CounterOrder struct {
 	SellToken         string `json:"sellToken,omitempty"`

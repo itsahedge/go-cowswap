@@ -49,7 +49,21 @@ func NewClient(options types.Options) *Client {
 	return client
 }
 
-func (c *Client) doRequest(ctx context.Context, endpoint, method string, expRes interface{}, reqData interface{}) (int, error) {
+func setQueryParam(endpoint *string, params []map[string]interface{}) {
+	var first = true
+	for _, param := range params {
+		for i := range param {
+			if first {
+				*endpoint = fmt.Sprintf("%s?%s=%v", *endpoint, i, param[i])
+				first = false
+			} else {
+				*endpoint = fmt.Sprintf("%s&%s=%v", *endpoint, i, param[i])
+			}
+		}
+	}
+}
+
+func (c *Client) doRequest(ctx context.Context, endpoint, method string, expRes interface{}, reqData interface{}, opts ...map[string]interface{}) (int, error) {
 	callURL := fmt.Sprintf("%s%s", c.Host, endpoint)
 
 	var dataReq []byte
@@ -60,6 +74,10 @@ func (c *Client) doRequest(ctx context.Context, endpoint, method string, expRes 
 		if err != nil {
 			return 0, err
 		}
+	}
+
+	if len(opts) > 0 && len(opts[0]) > 0 {
+		setQueryParam(&callURL, opts)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, method, callURL, bytes.NewBuffer(dataReq))
