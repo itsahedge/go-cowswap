@@ -321,6 +321,34 @@ type OrdersByUserResponse []struct {
 	} `json:"interactions"`
 }
 
+type SolverAuctionByTxHashResponse struct {
+	AuctionId                  int     `json:"auctionId"`
+	TransactionHash            string  `json:"transactionHash"`
+	GasPrice                   float64 `json:"gasPrice"`
+	LiquidityCollectedBlock    int     `json:"liquidityCollectedBlock"`
+	CompetitionSimulationBlock int     `json:"competitionSimulationBlock"`
+	Solutions                  []struct {
+		Solver    string `json:"solver"`
+		Objective struct {
+			Total   float64 `json:"total"`
+			Surplus float64 `json:"surplus"`
+			Fees    float64 `json:"fees"`
+			Cost    float64 `json:"cost"`
+			Gas     int     `json:"gas"`
+		} `json:"objective"`
+		Prices struct {
+			AdditionalProp1 string `json:"additionalProp1"`
+			AdditionalProp2 string `json:"additionalProp2"`
+			AdditionalProp3 string `json:"additionalProp3"`
+		} `json:"prices"`
+		Orders []struct {
+			Id             string `json:"id"`
+			ExecutedAmount string `json:"executedAmount"`
+		} `json:"orders"`
+		CallData string `json:"callData"`
+	} `json:"solutions"`
+}
+
 // CounterOrder represents a Gnosis CounterOrder.
 type CounterOrder struct {
 	SellToken         string `json:"sellToken,omitempty"`

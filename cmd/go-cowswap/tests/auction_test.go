@@ -17,3 +17,24 @@ func TestClient_GetAuction(t *testing.T) {
 	r, _ := json.MarshalIndent(res, "", "  ")
 	t.Logf("status code: %v\n%v", statusCode, string(r))
 }
+
+func TestClient_GetSolverAuctionById(t *testing.T) {
+	client := go_cowswap.NewClient(util.Options)
+	res, statusCode, err := client.GetSolverAuctionById(context.Background(), 130)
+	if err != nil {
+		t.Fatalf("GetSolverAuctionById err: %v", err)
+	}
+	r, _ := json.MarshalIndent(res, "", "  ")
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
+
+func TestClient_GetSolverAuctionByTxHash(t *testing.T) {
+	client := go_cowswap.NewClient(util.Options)
+	txHash := ""
+	res, statusCode, err := client.GetSolverAuctionByTxHash(context.Background(), txHash)
+	if err != nil {
+		t.Fatalf("GetSolverAuctionByTxHash err: %v", err)
+	}
+	r, _ := json.MarshalIndent(res, "", "  ")
+	t.Logf("status code: %v\n%v", statusCode, string(r))
+}
