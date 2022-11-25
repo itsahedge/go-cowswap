@@ -9,7 +9,7 @@ import (
 )
 
 func TestClient_GetNativePrice(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util.Options)
 	res, statusCode, err := client.GetNativePrice(context.Background(), util.GNO_TOKEN)
 	if err != nil {
 		t.Fatalf("GetNativePrice err: %v", err)

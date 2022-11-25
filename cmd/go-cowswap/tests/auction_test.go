@@ -9,7 +9,7 @@ import (
 )
 
 func TestClient_GetAuction(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util.Options)
 	res, statusCode, err := client.GetAuction(context.Background())
 	if err != nil {
 		t.Fatalf("GetAuction err: %v", err)
@@ -19,7 +19,7 @@ func TestClient_GetAuction(t *testing.T) {
 }
 
 func TestClient_GetSolverAuctionById(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util.Options)
 	res, statusCode, err := client.GetSolverAuctionById(context.Background(), 130)
 	if err != nil {
 		t.Fatalf("GetSolverAuctionById err: %v", err)
@@ -29,7 +29,7 @@ func TestClient_GetSolverAuctionById(t *testing.T) {
 }
 
 func TestClient_GetSolverAuctionByTxHash(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util.Options)
 	txHash := ""
 	res, statusCode, err := client.GetSolverAuctionByTxHash(context.Background(), txHash)
 	if err != nil {

@@ -4,14 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"testing"
 )
 
 func TestClient_GetQuote(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
-	o := &types.QuoteReq{
+	client, err := go_cowswap.NewClient(util.Options)
+	o := &go_cowswap.QuoteReq{
 		SellToken:           util.WETH_TOKEN,
 		BuyToken:            util.COW_TOKEN,
 		Receiver:            util.Options.EthAddress,

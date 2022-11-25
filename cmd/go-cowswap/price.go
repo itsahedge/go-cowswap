@@ -4,15 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
 )
 
-func (c *Client) GetNativePrice(ctx context.Context, tokenAddress string) (*types.NativePriceResponse, int, error) {
+type NativePriceResponse struct {
+	Price float64 `json:"price"`
+}
+
+func (c *Client) GetNativePrice(ctx context.Context, tokenAddress string) (*NativePriceResponse, int, error) {
 	if tokenAddress == "" {
 		return nil, 404, errors.New("token address not provided")
 	}
 	endpoint := fmt.Sprintf("/token/%v/native_price", tokenAddress)
-	var dataRes types.NativePriceResponse
+	var dataRes NativePriceResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
 		return nil, statusCode, err
