@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/types"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"io/ioutil"
+	"math/big"
 	"net/http"
 )
 
@@ -21,41 +21,49 @@ type Client struct {
 	Eip712OrderTypes apitypes.Types
 	TypedDataDomain  apitypes.TypedDataDomain
 
-	RpcUrl       string
-	EthKeySinger *util.EthKeySinger
-
+	RpcUrl    string
 	EthClient *ethclient.Client
+	ChainId   *big.Int
+
+	TransactionSigner *TransactionSigner
 }
 
-func NewClient(options types.Options) *Client {
+func NewClient(options util.ConfigOpts) (*Client, error) {
 	client := &Client{
 		Http:             &http.Client{},
 		Eip712OrderTypes: util.Eip712OrderTypes,
 		TypedDataDomain:  util.Domain,
 		Network:          options.Network,
 		Host:             options.Host,
+		RpcUrl:           options.RpcUrl,
 	}
-
 	if options.Network != "" {
 		client.Network = options.Network
 		client.Host = util.NetworkConfig[options.Network]
 	}
-
 	if options.RpcUrl != "" {
 		client.RpcUrl = options.RpcUrl
 	}
 
-	if options.PrivateKey != "" {
-		client.EthKeySinger = util.NewSigner(options.PrivateKey)
-	}
-
-	ethClient, err := ethclient.Dial(client.RpcUrl)
+	var err error
+	client.EthClient, err = ethclient.Dial(client.RpcUrl)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	client.EthClient = ethClient
+	chainId, err := client.EthClient.ChainID(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	client.ChainId = chainId
 
-	return client
+	if options.PrivateKey != "" {
+		transactionSigner, err := NewSigner(options.PrivateKey, chainId)
+		if err != nil {
+			return client, fmt.Errorf("NewSigner err: %v\n", err)
+		}
+		client.TransactionSigner = transactionSigner
+	}
+	return client, nil
 }
 
 func setQueryParam(endpoint *string, params []map[string]interface{}) {
