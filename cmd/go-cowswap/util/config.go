@@ -51,7 +51,7 @@ type ConfigOpts struct {
 var Options = ConfigOpts{
 	Network:    "mainnet",
 	Host:       NetworkConfig["mainnet"],
-	RpcUrl:     "https://rpc.flashbots.net",
+	RpcUrl:     "https://api.securerpc.com/v1",
 	EthAddress: "",
 	PrivateKey: "",
 }
