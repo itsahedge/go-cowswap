@@ -114,7 +114,8 @@ func (c *Client) doRequest(ctx context.Context, endpoint, method string, expRes 
 	}
 
 	switch resp.StatusCode {
-	case 200:
+	case 200, 201:
+		// note: CreateOrder returns 201..
 		if expRes != nil {
 			err = json.Unmarshal(body, expRes)
 			if err != nil {
