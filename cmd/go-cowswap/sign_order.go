@@ -27,7 +27,6 @@ func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
 
 // Hash computes this counter order's hash.
 func (o *CounterOrder) Hash() (common.Hash, error) {
-	// TODO: maybe refactor this.
 	var message = map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
