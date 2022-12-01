@@ -11,8 +11,8 @@ import (
 func TestClient_GetQuote(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	o := &go_cowswap.QuoteReq{
-		SellToken:           util.WETH_TOKEN,
-		BuyToken:            util.COW_TOKEN,
+		SellToken:           util.TOKEN_ADDRESSES["mainnet"]["WETH"],
+		BuyToken:            util.TOKEN_ADDRESSES["mainnet"]["COW"],
 		Receiver:            util.Options.EthAddress,
 		AppData:             "0x0000000000000000000000000000000000000000000000000000000000000000",
 		PartiallyFillable:   false,

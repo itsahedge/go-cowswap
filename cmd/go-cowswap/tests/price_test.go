@@ -10,7 +10,8 @@ import (
 
 func TestClient_GetNativePrice(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
-	res, statusCode, err := client.GetNativePrice(context.Background(), util.GNO_TOKEN)
+	token := util.TOKEN_ADDRESSES["mainnet"]["GNO"]
+	res, statusCode, err := client.GetNativePrice(context.Background(), token)
 	if err != nil {
 		t.Fatalf("GetNativePrice err: %v", err)
 	}
