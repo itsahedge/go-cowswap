@@ -40,6 +40,12 @@ var RpcConfig = map[string]string{
 	"xdai":    RPC_XDAI,
 }
 
+var SigningSchemeConfig = map[string]string{
+	"mainnet": "eip712",
+	"goerli":  "ethsign",
+	"xdai":    "ethsign",
+}
+
 var Eip712OrderTypes = apitypes.Types{
 	"EIP712Domain": {
 		{
@@ -111,9 +117,17 @@ var Eip712OrderTypes = apitypes.Types{
 	},
 }
 
+// Default chainId is mainnet
 var Domain = apitypes.TypedDataDomain{
 	Name:              "Gnosis Protocol",
 	Version:           "v2",
 	ChainId:           math.NewHexOrDecimal256(1),
 	VerifyingContract: GPv2Settlement,
+}
+
+var TypedData = apitypes.TypedData{
+	Types:       Eip712OrderTypes,
+	PrimaryType: "Order",
+	Domain:      Domain,
+	Message:     map[string]interface{}{},
 }
