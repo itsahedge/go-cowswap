@@ -9,7 +9,10 @@ import (
 )
 
 func TestCheckAllowance(t *testing.T) {
-	client := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util.Options)
+	if err != nil {
+		t.Fatal(err)
+	}
 	ownerAddress := util.Options.EthAddress
 	tokenAddress := util.WETH_TOKEN
 	allowance, err := client.GetAllowance(context.Background(), ownerAddress, tokenAddress)
@@ -18,4 +21,18 @@ func TestCheckAllowance(t *testing.T) {
 	}
 	result, _ := json.MarshalIndent(allowance, "", "  ")
 	t.Logf("%v token allowance: %v \n", tokenAddress, string(result))
+}
+
+func TestApproveSpender(t *testing.T) {
+	client, err := go_cowswap.NewClient(util.Options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tokenAmount := ""
+	tokenToApprove := util.USDC_TOKEN
+	tx, err := client.SetAllowance(context.Background(), tokenToApprove, tokenAmount)
+	if err != nil {
+		t.Fatalf("SetAllowance err : %v", err)
+	}
+	t.Logf("tx hash: %v", tx.Hash())
 }
