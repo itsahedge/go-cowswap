@@ -3,8 +3,8 @@ package go_cowswap_test
 import (
 	"context"
 	"encoding/json"
-	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
+	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"testing"
 )
 

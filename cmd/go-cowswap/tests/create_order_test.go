@@ -3,8 +3,8 @@ package go_cowswap
 import (
 	"context"
 	"encoding/json"
-	go_cowswap2 "github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
+	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"strings"
 	"testing"
 )
@@ -18,7 +18,7 @@ func TestCreateOrder(t *testing.T) {
 		EthAddress: "",
 		PrivateKey: "",
 	}
-	client, err := go_cowswap2.NewClient(options)
+	client, err := go_cowswap.NewClient(options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func TestCreateOrder(t *testing.T) {
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
 	// 1) Fetch Order quote
-	quoteReq := &go_cowswap2.QuoteReq{
+	quoteReq := &go_cowswap.QuoteReq{
 		SellToken:           sellToken,
 		BuyToken:            buyToken,
 		Receiver:            strings.ToLower(receiver),
@@ -67,7 +67,7 @@ func TestCreateOrder(t *testing.T) {
 	t.Logf("ValidTo: %v ", validToFromQuote)
 
 	// 2) Build the Order
-	order := &go_cowswap2.CounterOrder{
+	order := &go_cowswap.CounterOrder{
 		SellToken:         sellToken,
 		BuyToken:          buyToken,
 		Receiver:          strings.ToLower(receiver),

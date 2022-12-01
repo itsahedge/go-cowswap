@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/itsahedge/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"io/ioutil"
 	"math/big"
 	"net/http"
