@@ -1,16 +1,16 @@
 package util
 
 const (
-	MAINNET            = "https://api.cow.fi/mainnet/api/v1"
-	GOERLI             = "https://api.cow.fi/goerli/api/v1"
-	GNOSIS_CHAIN       = "https://api.cow.fi/xdai/api/v1"
+	MAINNET_API        = "https://api.cow.fi/mainnet/api/v1"
+	GOERLI_API         = "https://api.cow.fi/goerli/api/v1"
+	GNOSIS_CHAIN_API   = "https://api.cow.fi/xdai/api/v1"
 	GPv2Settlement     = "0x9008D19f58AAbD9eD0D60971565AA8510560ab41"
 	GPv2_Vault_Relayer = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
 )
 
 const (
 	RPC_MAINNET = "https://api.securerpc.com/v1"
-	RPC_GOERLI  = "https://eth-goerli-rpc.gateway.pokt.network/"
+	RPC_GOERLI  = "https://eth-goerli-rpc.gateway.pokt.network"
 	RPC_XDAI    = "https://xdai-rpc.gateway.pokt.network"
 )
 
@@ -31,4 +31,8 @@ var GOERLI_TOKEN_LIST = map[string]string{
 	"USDC": "0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C",
 	"WETH": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
 	"ZRX":  "0xe4E81Fa6B16327D4B78CFEB83AAdE04bA7075165",
+}
+
+var GNOSIS_SCAN_TOKEN_LIST = map[string]string{
+	"GNO": "",
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 )
 
-// Default options
 type ConfigOpts struct {
 	Network string
 	Host    string
@@ -17,7 +16,7 @@ type ConfigOpts struct {
 
 var Options = ConfigOpts{
 	Network:    "mainnet",
-	Host:       NetworkConfig["mainnet"],
+	Host:       HostConfig["mainnet"],
 	RpcUrl:     RpcConfig["mainnet"],
 	EthAddress: "",
 	PrivateKey: "",
@@ -26,12 +25,13 @@ var Options = ConfigOpts{
 var TOKEN_ADDRESSES = map[string]map[string]string{
 	"mainnet": ETHEREUM_TOKEN_LIST,
 	"goerli":  GOERLI_TOKEN_LIST,
+	"xdai":    GNOSIS_SCAN_TOKEN_LIST,
 }
 
-var NetworkConfig = map[string]string{
-	"mainnet": MAINNET,
-	"goerli":  GOERLI,
-	"xdai":    GNOSIS_CHAIN,
+var HostConfig = map[string]string{
+	"mainnet": MAINNET_API,
+	"goerli":  GOERLI_API,
+	"xdai":    GNOSIS_CHAIN_API,
 }
 
 var RpcConfig = map[string]string{

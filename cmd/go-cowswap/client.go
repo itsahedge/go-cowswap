@@ -14,6 +14,7 @@ import (
 )
 
 type Client struct {
+	Options util.ConfigOpts
 	Network string
 	Host    string
 
@@ -30,6 +31,7 @@ type Client struct {
 
 func NewClient(options util.ConfigOpts) (*Client, error) {
 	client := &Client{
+		Options:          options,
 		Http:             &http.Client{},
 		Eip712OrderTypes: util.Eip712OrderTypes,
 		TypedDataDomain:  util.Domain,
@@ -39,7 +41,7 @@ func NewClient(options util.ConfigOpts) (*Client, error) {
 	}
 	if options.Network != "" {
 		client.Network = options.Network
-		client.Host = util.NetworkConfig[options.Network]
+		client.Host = util.HostConfig[options.Network]
 	}
 	if options.RpcUrl != "" {
 		client.RpcUrl = options.RpcUrl
