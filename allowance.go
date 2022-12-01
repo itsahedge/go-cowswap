@@ -7,8 +7,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	contract_binding "github.com/itsahedge/go-cowswap/pkg/contracts/generated"
+	"github.com/itsahedge/go-cowswap/util"
 	"math/big"
 )
 

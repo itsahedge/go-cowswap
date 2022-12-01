@@ -2,8 +2,8 @@ package go_cowswap_test
 
 import (
 	"fmt"
-	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap"
+	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
