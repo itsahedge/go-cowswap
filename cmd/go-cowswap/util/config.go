@@ -28,15 +28,9 @@ const (
 const (
 	WETH_TOKEN = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 	COW_TOKEN  = "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab"
-	USDC_TOKEN = "0xa0b86991c6218b36c1dgst19d4a2e9eb0ce3606eb48"
+	USDC_TOKEN = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
 	GNO_TOKEN  = "0x6810e776880c02933d47db1b9fc05908e5386b96"
 )
-
-var NetworkConfig = map[string]string{
-	"mainnet": MAINNET,
-	"goerli":  GOERLI,
-	"xdai":    GNOSIS_CHAIN,
-}
 
 // Default options
 type ConfigOpts struct {
@@ -48,10 +42,22 @@ type ConfigOpts struct {
 	PrivateKey string
 }
 
+var NetworkConfig = map[string]string{
+	"mainnet": MAINNET,
+	"goerli":  GOERLI,
+	"xdai":    GNOSIS_CHAIN,
+}
+
+var RpcConfig = map[string]string{
+	"mainnet": "https://api.securerpc.com/v1",
+	"goerli":  "https://eth-goerli-rpc.gateway.pokt.network/",
+	"xdai":    "https://xdai-rpc.gateway.pokt.network",
+}
+
 var Options = ConfigOpts{
 	Network:    "mainnet",
 	Host:       NetworkConfig["mainnet"],
-	RpcUrl:     "https://api.securerpc.com/v1",
+	RpcUrl:     RpcConfig["mainnet"],
 	EthAddress: "",
 	PrivateKey: "",
 }
