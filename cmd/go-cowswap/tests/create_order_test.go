@@ -10,14 +10,21 @@ import (
 )
 
 func TestCreateOrder(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	network := "goerli"
+	options := util.ConfigOpts{
+		Network:    network,
+		Host:       util.HostConfig[network],
+		RpcUrl:     util.RpcConfig[network],
+		EthAddress: "",
+		PrivateKey: "",
+	}
+	client, err := go_cowswap.NewClient(options)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	//client.ChainId
-	sellToken := util.TOKEN_ADDRESSES["mainnet"]["WETH"]
-	buyToken := util.TOKEN_ADDRESSES["mainnet"]["USDC"]
+	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
+	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
 	seeAmountBeforeFee := "100000000000000000" // 0.1 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
@@ -32,7 +39,7 @@ func TestCreateOrder(t *testing.T) {
 		SellTokenBalance:    "erc20",
 		BuyTokenBalance:     "erc20",
 		PriceQuality:        "fast",
-		SigningScheme:       "ethsign",
+		SigningScheme:       util.SigningSchemeConfig[network], // ethsign or eip712
 		OnchainOrder:        false,
 		Kind:                "sell",
 		SellAmountBeforeFee: seeAmountBeforeFee,
@@ -73,7 +80,7 @@ func TestCreateOrder(t *testing.T) {
 		PartiallyFillable: false,
 		SellTokenBalance:  "erc20",
 		BuyTokenBalance:   "erc20",
-		SigningScheme:     "ethsign",
+		SigningScheme:     util.SigningSchemeConfig[network], // ethsign or eip712
 		From:              strings.ToLower(from),
 	}
 

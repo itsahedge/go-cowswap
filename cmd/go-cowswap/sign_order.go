@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"strings"
 )
 
 // SignOrder builds the CounterOrder from its Hash, Signs the Hash & Adds Signature
 func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
-	hash, err := order.Hash()
+	hash, err := c.Hash(order)
 	if err != nil {
 		return nil, fmt.Errorf("computing order hash: %v\n", err)
 	}
@@ -26,7 +26,7 @@ func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
 }
 
 // Hash computes this counter order's hash.
-func (o *CounterOrder) Hash() (common.Hash, error) {
+func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 	var message = map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
@@ -42,12 +42,12 @@ func (o *CounterOrder) Hash() (common.Hash, error) {
 		"buyTokenBalance":   o.BuyTokenBalance,
 	}
 
-	var typedData = apitypes.TypedData{
-		Types:       util.Eip712OrderTypes,
-		PrimaryType: "Order",
-		Domain:      util.Domain,
-		Message:     message,
-	}
+	domain := util.Domain
+	domain.ChainId = math.NewHexOrDecimal256(c.ChainId.Int64())
+
+	typedData := util.TypedData
+	typedData.Domain = domain
+	typedData.Message = message
 
 	domainSeparator, err := typedData.HashStruct("EIP712Domain", typedData.Domain.Map())
 	if err != nil {
