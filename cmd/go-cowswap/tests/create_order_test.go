@@ -15,8 +15,9 @@ func TestCreateOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sellToken := util.WETH_TOKEN
-	buyToken := util.USDC_TOKEN
+	//client.ChainId
+	sellToken := util.TOKEN_ADDRESSES["mainnet"]["WETH"]
+	buyToken := util.TOKEN_ADDRESSES["mainnet"]["USDC"]
 	seeAmountBeforeFee := "100000000000000000" // 0.1 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()

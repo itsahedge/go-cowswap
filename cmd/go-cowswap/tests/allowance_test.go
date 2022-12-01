@@ -14,7 +14,7 @@ func TestCheckAllowance(t *testing.T) {
 		t.Fatal(err)
 	}
 	ownerAddress := util.Options.EthAddress
-	tokenAddress := util.WETH_TOKEN
+	tokenAddress := util.TOKEN_ADDRESSES["mainnet"]["WETH"]
 	allowance, err := client.GetAllowance(context.Background(), ownerAddress, tokenAddress)
 	if err != nil {
 		t.Fatalf("GetAllowance err: %v", err)
@@ -29,7 +29,7 @@ func TestApproveSpender(t *testing.T) {
 		t.Fatal(err)
 	}
 	tokenAmount := ""
-	tokenToApprove := util.USDC_TOKEN
+	tokenToApprove := util.TOKEN_ADDRESSES["mainnet"]["USDC"]
 	tx, err := client.SetAllowance(context.Background(), tokenToApprove, tokenAmount)
 	if err != nil {
 		t.Fatalf("SetAllowance err : %v", err)
