@@ -15,9 +15,9 @@ type ConfigOpts struct {
 }
 
 var Options = ConfigOpts{
-	Network:    "mainnet",
-	Host:       HostConfig["mainnet"],
-	RpcUrl:     RpcConfig["mainnet"],
+	Network:    "goerli",
+	Host:       HostConfig["goerli"],
+	RpcUrl:     RpcConfig["goerli"],
 	EthAddress: "",
 	PrivateKey: "",
 }
