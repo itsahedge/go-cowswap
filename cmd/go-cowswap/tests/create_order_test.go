@@ -11,14 +11,14 @@ import (
 
 func TestCreateOrder(t *testing.T) {
 	network := "goerli"
-	options := util.ConfigOpts{
-		Network:    network,
-		Host:       util.HostConfig[network],
-		RpcUrl:     util.RpcConfig[network],
-		EthAddress: "",
-		PrivateKey: "",
-	}
-	client, err := go_cowswap.NewClient(options)
+	//options := util.ConfigOpts{
+	//	Network:    network,
+	//	Host:       util.HostConfig[network],
+	//	RpcUrl:     util.RpcConfig[network],
+	//	EthAddress: "",
+	//	PrivateKey: "",
+	//}
+	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,5 +99,9 @@ func TestCreateOrder(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	uid := *resp
+	t.Logf("status code: %v\nresp: %v\n", statusCode, uid)
+}
+
 	t.Logf("status code: %v\nresp: %v\n", statusCode, resp)
 }
