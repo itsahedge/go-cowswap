@@ -29,10 +29,16 @@ func TestCreateThenCancelOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	uidBytes := []byte(uid)
+	fmt.Println("length of uidBytes:", len(uidBytes))
+
+	// removes 0x
+	//test, err := hex.DecodeString(uid[2:])
+	//fmt.Println("length of test:", len(test))
 
 	// Prepare the OrderCancellation payload
 	order := &go_cowswap.CancelOrder{
-		OrderUids: uidBytes,
+		OrderUids:     uidBytes,
+		SigningScheme: "eip712",
 	}
 
 	// TODO: fix Signing the cancelled order
@@ -40,7 +46,10 @@ func TestCreateThenCancelOrder(t *testing.T) {
 	if err != nil {
 		t.Fatal("SignCancelOrder:", err)
 	}
+	fmt.Println("======")
+	fmt.Println("order payload after SignCancelOrder():", order)
 	fmt.Println("order.Signature::::", order.Signature)
+	fmt.Println("======")
 
 	// pass in the signed cancel order
 	resp, statusCode, err := client.CancelOrder(context.Background(), order)

@@ -11,7 +11,8 @@ import (
 
 func (c *Client) HashCancel(o *CancelOrder) (common.Hash, error) {
 	var message = map[string]interface{}{
-		"orderUids": o.OrderUids,
+		"orderUids":     o.OrderUids,
+		"signingScheme": o.SigningScheme,
 	}
 	domain := util.Domain
 	domain.ChainId = math.NewHexOrDecimal256(c.ChainId.Int64())
@@ -48,8 +49,9 @@ func (c *Client) SignCancelOrder(order *CancelOrder) (*CancelOrder, error) {
 }
 
 type CancelOrder struct {
-	OrderUids []byte `json:"order_uids"`
-	Signature string `json:"signature"`
+	OrderUids     []byte `json:"order_uids"`
+	Signature     string `json:"signature"`
+	SigningScheme string `json:"signing_scheme"`
 }
 
 func (c *Client) CancelOrder(ctx context.Context, o *CancelOrder) (*string, int, error) {
