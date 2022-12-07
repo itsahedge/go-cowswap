@@ -115,6 +115,16 @@ var Eip712OrderTypes = apitypes.Types{
 			Type: "string",
 		},
 	},
+	"OrderCancellations": {
+		{
+			Name: "orderUids",
+			Type: "bytes[]",
+		},
+		{
+			Name: "signingScheme",
+			Type: "string",
+		},
+	},
 }
 
 // Default chainId is mainnet
