@@ -15,9 +15,9 @@ type ConfigOpts struct {
 }
 
 var Options = ConfigOpts{
-	Network:    "mainnet",
-	Host:       HostConfig["mainnet"],
-	RpcUrl:     RpcConfig["mainnet"],
+	Network:    "goerli",
+	Host:       HostConfig["goerli"],
+	RpcUrl:     RpcConfig["goerli"],
 	EthAddress: "",
 	PrivateKey: "",
 }
@@ -112,6 +112,16 @@ var Eip712OrderTypes = apitypes.Types{
 		},
 		{
 			Name: "buyTokenBalance",
+			Type: "string",
+		},
+	},
+	"OrderCancellations": {
+		{
+			Name: "orderUids",
+			Type: "bytes",
+		},
+		{
+			Name: "signingScheme",
 			Type: "string",
 		},
 	},
