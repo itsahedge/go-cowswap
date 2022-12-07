@@ -141,12 +141,12 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 	appDataFromQuote := quoteResp.Quote.AppData
 	validToFromQuote := quoteResp.Quote.ValidTo
 
-	fmt.Print("values from quote i will be using in CreateOrder():")
-	fmt.Printf("SellAmount: %v ", sellAmountFromQuote)
-	fmt.Printf("BuyAmount: %v ", buyAmountFromQuote)
-	fmt.Printf("FeeAmount: %v ", feeAmountFromQuote)
-	fmt.Printf("AppData: %v ", appDataFromQuote)
-	fmt.Printf("ValidTo: %v ", validToFromQuote)
+	fmt.Println("values from quote response to be used:")
+	fmt.Printf("SellAmount: %v \n", sellAmountFromQuote)
+	fmt.Printf("BuyAmount: %v \n", buyAmountFromQuote)
+	fmt.Printf("FeeAmount: %v \n", feeAmountFromQuote)
+	fmt.Printf("AppData: %v \n", appDataFromQuote)
+	fmt.Printf("ValidTo: %v \n", validToFromQuote)
 
 	// 2) Build the Order
 	order := &go_cowswap.CounterOrder{
@@ -182,6 +182,7 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 		fmt.Print(err)
 	}
 	uid := *resp
-	fmt.Printf("status code: %v\nresp: %v\n", statusCode, uid)
+	fmt.Printf("status code: %v \n", statusCode)
+	fmt.Printf("order uid: %v \n", uid)
 	return uid, nil
 }
