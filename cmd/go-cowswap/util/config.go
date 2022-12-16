@@ -40,6 +40,12 @@ var RpcConfig = map[string]string{
 	"xdai":    RPC_XDAI,
 }
 
+var ChainIds = map[string]int{
+	"mainnet": 1,
+	"goerli":  5,
+	"xdai":    100,
+}
+
 var SigningSchemeConfig = map[string]string{
 	"mainnet": "eip712",
 	"goerli":  "ethsign",
