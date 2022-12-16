@@ -1,7 +1,6 @@
 package go_cowswap
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
@@ -12,13 +11,6 @@ import (
 
 func TestCreateOrder(t *testing.T) {
 	network := "goerli"
-	//options := util.ConfigOpts{
-	//	Network:    network,
-	//	Host:       util.HostConfig[network],
-	//	RpcUrl:     util.RpcConfig[network],
-	//	EthAddress: "",
-	//	PrivateKey: "",
-	//}
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
@@ -47,25 +39,24 @@ func TestCreateOrder(t *testing.T) {
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, statusCodeQuote, err := client.GetQuote(context.Background(), quoteReq)
+	quoteResp, err := client.Quote(quoteReq)
 	if err != nil {
 		t.Fatal(err)
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
-	t.Logf("status code: %v\n%v", statusCodeQuote, string(r))
+	t.Logf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
 	buyAmountFromQuote := quoteResp.Quote.BuyAmount
 	feeAmountFromQuote := quoteResp.Quote.FeeAmount
-	appDataFromQuote := quoteResp.Quote.AppData
 	validToFromQuote := quoteResp.Quote.ValidTo
 
-	t.Log("values from quote i will be using in CreateOrder():")
-	t.Logf("SellAmount: %v ", sellAmountFromQuote)
-	t.Logf("BuyAmount: %v ", buyAmountFromQuote)
-	t.Logf("FeeAmount: %v ", feeAmountFromQuote)
-	t.Logf("AppData: %v ", appDataFromQuote)
-	t.Logf("ValidTo: %v ", validToFromQuote)
+	//t.Log("values from quote i will be using in CreateOrder():")
+	//t.Logf("SellAmount: %v ", sellAmountFromQuote)
+	//t.Logf("BuyAmount: %v ", buyAmountFromQuote)
+	//t.Logf("FeeAmount: %v ", feeAmountFromQuote)
+	//t.Logf("AppData: %v ", appDataFromQuote)
+	//t.Logf("ValidTo: %v ", validToFromQuote)
 
 	// 2) Build the Order
 	order := &go_cowswap.CounterOrder{
@@ -96,18 +87,18 @@ func TestCreateOrder(t *testing.T) {
 	}
 
 	// 4) Place Trade order
-	resp, statusCode, err := client.CreateOrder(context.Background(), order)
+	resp, err := client.CreateOrder(order)
 	if err != nil {
 		t.Fatal(err)
 	}
 	uid := *resp
-	t.Logf("status code: %v\nresp: %v\n", statusCode, uid)
+	t.Logf("tx id: %v", uid)
 }
 
 func CreateOrderHandler(client *go_cowswap.Client, network string) (string, error) {
 	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
-	seeAmountBeforeFee := "100000000000000000" // 0.1 ETH
+	seeAmountBeforeFee := "200000000000000000" // 0.1 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
@@ -128,12 +119,12 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, statusCodeQuote, err := client.GetQuote(context.Background(), quoteReq)
+	quoteResp, err := client.Quote(quoteReq)
 	if err != nil {
 		return "", err
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
-	fmt.Printf("status code: %v\n%v", statusCodeQuote, string(r))
+	fmt.Printf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
 	buyAmountFromQuote := quoteResp.Quote.BuyAmount
@@ -177,12 +168,14 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 	}
 
 	// 4) Place Trade order
-	resp, statusCode, err := client.CreateOrder(context.Background(), order)
+	resp, err := client.CreateOrder(order)
 	if err != nil {
 		fmt.Print(err)
 	}
 	uid := *resp
-	fmt.Printf("status code: %v \n", statusCode)
+	// {"errorType":"InsufficientFee","description":"Order does not include sufficient fee"}--- FAIL: TestCreateThenCancelOrder (1.36s)
+	fmt.Println("======")
 	fmt.Printf("order uid: %v \n", uid)
+	fmt.Println("======")
 	return uid, nil
 }
