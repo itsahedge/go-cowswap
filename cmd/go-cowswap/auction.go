@@ -1,9 +1,10 @@
 package go_cowswap
 
 import (
-	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -54,14 +55,30 @@ type AuctionResponse struct {
 }
 
 // GetAuction The current batch auction that solvers should be solving right now. Includes the list of solvable orders, the block on which the batch was created, as well as prices for all tokens being traded (used for objective value computation).
-func (c *Client) GetAuction(ctx context.Context) (*AuctionResponse, int, error) {
-	endpoint := "/auction"
-	var dataRes AuctionResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
+func (C *Client) GetAuction() (*AuctionResponse, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/auction", C.Host), nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &AuctionResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }
 
 type SolverAuctionByIdResponse struct {
@@ -93,17 +110,34 @@ type SolverAuctionByIdResponse struct {
 }
 
 // GetSolverAuctionById Returns the competition information by auction id.
-func (c *Client) GetSolverAuctionById(ctx context.Context, auctionId int) (*SolverAuctionByIdResponse, int, error) {
+func (C *Client) GetSolverAuctionById(auctionId int) (*SolverAuctionByIdResponse, error) {
 	if auctionId == 0 {
-		return nil, 404, errors.New("auction id not provided")
+		return nil, errors.New("auction id not provided")
 	}
-	endpoint := fmt.Sprintf("/solver_competition/%v", auctionId)
-	var dataRes SolverAuctionByIdResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
+	endpoint := fmt.Sprintf("%s/solver_competition/%v", C.Host, auctionId)
+	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &SolverAuctionByIdResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }
 
 type SolverAuctionByTxHashResponse struct {
@@ -135,15 +169,29 @@ type SolverAuctionByTxHashResponse struct {
 }
 
 // GetSolverAuctionByTxHash Returns the competition information by transaction hash.
-func (c *Client) GetSolverAuctionByTxHash(ctx context.Context, txHash string) (*SolverAuctionByTxHashResponse, int, error) {
-	if txHash == "" {
-		return nil, 404, errors.New("transaction hash not provided")
-	}
-	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%v", txHash)
-	var dataRes SolverAuctionByTxHashResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
+func (C *Client) GetSolverAuctionByTxHash(txHash string) (*SolverAuctionByTxHashResponse, error) {
+	endpoint := fmt.Sprintf("%s/solver_competition/by_tx_hash/%s", C.Host, txHash)
+	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &SolverAuctionByTxHashResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }

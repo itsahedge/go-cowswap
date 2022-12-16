@@ -1,9 +1,10 @@
 package go_cowswap
 
 import (
-	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -43,17 +44,35 @@ type OrderByUidResponse struct {
 	OnchainUser string `json:"onchainUser"`
 }
 
-func (c *Client) GetOrdersByUid(ctx context.Context, uid string) (*OrderByUidResponse, int, error) {
+func (C *Client) GetOrdersByUid(uid string) (*OrderByUidResponse, error) {
 	if uid == "" {
-		return nil, 404, errors.New("order UID not provided")
+		return nil, errors.New("order UID not provided")
 	}
-	endpoint := fmt.Sprintf("/orders/%s", uid)
-	var dataRes OrderByUidResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
-	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("order UID not found")
+	endpoint := fmt.Sprintf("%s/orders/%s", C.Host, uid)
+
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &OrderByUidResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }
 
 type OrdersByTxHashResponse []struct {
@@ -90,17 +109,34 @@ type OrdersByTxHashResponse []struct {
 	} `json:"interactions"`
 }
 
-func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
+func (C *Client) GetOrdersByTxHash(txHash string) (*OrdersByTxHashResponse, error) {
 	if txHash == "" {
-		return nil, 404, errors.New("transaction hash not provided")
+		return nil, errors.New("transaction hash not provided")
 	}
-	endpoint := fmt.Sprintf("/transactions/%s/orders", txHash)
-	var dataRes OrdersByTxHashResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
-	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("transaction hash not found")
+	endpoint := fmt.Sprintf("%s/transactions/%s/orders", C.Host, txHash)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &OrdersByTxHashResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }
 
 type OrdersPaginated struct {
@@ -142,24 +178,48 @@ type OrdersByUserResponse []struct {
 	} `json:"interactions"`
 }
 
-func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*OrdersByUserResponse, int, error) {
+func (C *Client) GetOrdersByUser(userAddress string, opts *OrdersPaginated) (*OrdersByTxHashResponse, error) {
 	if userAddress == "" {
-		return nil, 404, errors.New("user address not provided")
+		return nil, errors.New("user address not provided")
 	}
-	endpoint := fmt.Sprintf("/account/%s/orders", userAddress)
-	var queries = make(map[string]interface{})
+	endpoint := fmt.Sprintf("%s/account/%s/orders", C.Host, userAddress)
+	fmt.Println("endpoint: ", endpoint)
 	if opts != nil {
-		if opts.Limit != "" {
-			queries["limit"] = opts.Limit
-		}
-		if opts.Offset != "" {
-			queries["offset"] = opts.Offset
+		if opts.Limit != "" && opts.Offset != "" {
+			endpoint = fmt.Sprintf("%s?offset=%v&limit=%v", endpoint, opts.Offset, opts.Limit)
+		} else {
+			if opts.Limit != "" {
+				endpoint = fmt.Sprintf("%s?limit=%v", endpoint, opts.Limit)
+			}
+			if opts.Offset != "" {
+				endpoint = fmt.Sprintf("%s?offset=%v", endpoint, opts.Offset)
+			}
 		}
 	}
-	var dataRes OrdersByUserResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil, queries)
+
+	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, err
 	}
-	return &dataRes, statusCode, nil
+
+	fmt.Println("req:", req)
+
+	resp, err := C.Http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case 200, 201:
+		out := &OrdersByTxHashResponse{}
+		return out, dec.Decode(out)
+	default:
+		err := &ErrorResponse{}
+		if err2 := dec.Decode(err); err2 != nil {
+			return nil, err2
+		}
+		return nil, err
+	}
 }
