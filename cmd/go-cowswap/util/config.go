@@ -124,11 +124,7 @@ var Eip712OrderTypes = apitypes.Types{
 	"OrderCancellations": {
 		{
 			Name: "orderUids",
-			Type: "bytes",
-		},
-		{
-			Name: "signingScheme",
-			Type: "string",
+			Type: "bytes[]",
 		},
 	},
 }
