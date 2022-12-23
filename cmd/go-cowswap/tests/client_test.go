@@ -18,6 +18,12 @@ func TestNewClient(t *testing.T) {
 		t.Logf("initialized client without a transaction signer: %v", client)
 	}
 
+	chainId, err := client.EthClient.ChainID(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%v", chainId)
+
 	block, err := client.EthClient.BlockNumber(context.Background())
 	if err != nil {
 		t.Fatal(err)

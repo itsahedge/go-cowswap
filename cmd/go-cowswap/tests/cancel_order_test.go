@@ -21,7 +21,7 @@ func NewSignerTest() (*ecdsa.PrivateKey, error) {
 	return pk, nil
 }
 
-func Test_CancelOrder4(t *testing.T) {
+func Test_CancelOrder(t *testing.T) {
 	// manually get a random uid
 	uid := "0xe9ff528b465b9b6419eee7d79ec5730856d96b09d0ec5473b972f521e3bb1a7475144248501e8629214cfdef09e1f0fe21bf83a563a3729a"
 	checkAddress := common.HexToAddress("")

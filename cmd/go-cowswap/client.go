@@ -1,6 +1,7 @@
 package go_cowswap
 
 import (
+	"context"
 	"fmt"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -36,6 +37,19 @@ func NewClient(options util.ConfigOpts) (*Client, error) {
 		Host:             options.Host,
 		RpcUrl:           options.RpcUrl,
 	}
+	if err := setClientNetwork(client, options); err != nil {
+		return nil, err
+	}
+	if err := setClientRPC(client, options); err != nil {
+		return nil, err
+	}
+	if err := setClientAuth(client, options); err != nil {
+		return nil, err
+	}
+	return client, nil
+}
+
+func setClientNetwork(client *Client, options util.ConfigOpts) error {
 	if options.Network != "" {
 		client.Network = options.Network
 		client.Host = util.HostConfig[options.Network]
@@ -43,34 +57,35 @@ func NewClient(options util.ConfigOpts) (*Client, error) {
 		client.ChainIdInt = chainId
 		client.ChainId = big.NewInt(int64(chainId))
 	}
-	if options.RpcUrl != "" {
-		client.RpcUrl = options.RpcUrl
-		// add the eth client with rpc..
-	}
-
-	// change to withEthClient
-	// if options.WithAuthEth != nil .. then add
-	var err error
-	client.EthClient, err = ethclient.Dial(client.RpcUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	// WithAuth
-	if options.PrivateKey != "" {
-		client, err = client.WithAuth(options)
-	}
-	return client, nil
+	return nil
 }
 
-func (C *Client) WithAuth(options util.ConfigOpts) (*Client, error) {
-	transactionSigner, err := NewSigner(options.PrivateKey, C.ChainId)
-	if err != nil {
-		return C, fmt.Errorf("NewSigner err: %v\n", err)
+func setClientRPC(client *Client, options util.ConfigOpts) error {
+	if options.RpcUrl != "" {
+		client.RpcUrl = options.RpcUrl
+		ethClient, err := ethclient.Dial(client.RpcUrl)
+		if err != nil {
+			return err
+		}
+		client.EthClient = ethClient
+		chainId, err := ethClient.ChainID(context.Background())
+		if err != nil {
+			return err
+		}
+		client.ChainId = chainId
 	}
-	C.TransactionSigner = transactionSigner
-	fmt.Println("WithAuth:", C.TransactionSigner)
-	return C, nil
+	return nil
+}
+
+func setClientAuth(client *Client, options util.ConfigOpts) error {
+	if options.PrivateKey != "" {
+		transactionSigner, err := NewSigner(options.PrivateKey, client.ChainId)
+		if err != nil {
+			return fmt.Errorf("NewSigner err: %v\n", err)
+		}
+		client.TransactionSigner = transactionSigner
+	}
+	return nil
 }
 
 type ErrorResponse struct {
