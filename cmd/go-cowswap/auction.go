@@ -1,10 +1,8 @@
 package go_cowswap
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"fmt"
-	"net/http"
 	"time"
 )
 
@@ -55,30 +53,14 @@ type AuctionResponse struct {
 }
 
 // GetAuction The current batch auction that solvers should be solving right now. Includes the list of solvable orders, the block on which the batch was created, as well as prices for all tokens being traded (used for objective value computation).
-func (C *Client) GetAuction() (*AuctionResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/auction", C.Host), nil)
+func (c *Client) GetAuction(ctx context.Context) (*AuctionResponse, int, error) {
+	endpoint := "/auction"
+	var dataRes AuctionResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &AuctionResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }
 
 type SolverAuctionByIdResponse struct {
@@ -110,34 +92,17 @@ type SolverAuctionByIdResponse struct {
 }
 
 // GetSolverAuctionById Returns the competition information by auction id.
-func (C *Client) GetSolverAuctionById(auctionId int) (*SolverAuctionByIdResponse, error) {
-	if auctionId == 0 {
-		return nil, errors.New("auction id not provided")
+func (c *Client) GetSolverAuctionById(ctx context.Context, auctionId int) (*SolverAuctionByIdResponse, int, error) {
+	if auctionId < 0 {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_auction_id", Description: "invalid auction id"}
 	}
-	endpoint := fmt.Sprintf("%s/solver_competition/%v", C.Host, auctionId)
-	req, err := http.NewRequest("GET", endpoint, nil)
+	endpoint := fmt.Sprintf("/solver_competition/%v", auctionId)
+	var dataRes SolverAuctionByIdResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &SolverAuctionByIdResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }
 
 type SolverAuctionByTxHashResponse struct {
@@ -169,29 +134,15 @@ type SolverAuctionByTxHashResponse struct {
 }
 
 // GetSolverAuctionByTxHash Returns the competition information by transaction hash.
-func (C *Client) GetSolverAuctionByTxHash(txHash string) (*SolverAuctionByTxHashResponse, error) {
-	endpoint := fmt.Sprintf("%s/solver_competition/by_tx_hash/%s", C.Host, txHash)
-	req, err := http.NewRequest("GET", endpoint, nil)
+func (c *Client) GetSolverAuctionByTxHash(ctx context.Context, txHash string) (*SolverAuctionByTxHashResponse, int, error) {
+	if txHash == "" {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "invalid tx hash"}
+	}
+	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%s", txHash)
+	var dataRes SolverAuctionByTxHashResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &SolverAuctionByTxHashResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }

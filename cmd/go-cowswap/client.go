@@ -97,7 +97,7 @@ type ErrorResponse struct {
 }
 
 type ErrorCowResponse struct {
-	Code        int    `json:"code,omitempty"`
+	Code        int    `json:"code"`
 	ErrorType   string `json:"errorType"`
 	Description string `json:"description"`
 }
