@@ -1,6 +1,7 @@
 package go_cowswap
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
@@ -9,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestCreateOrder(t *testing.T) {
+func Test_CreateOrder(t *testing.T) {
 	network := "goerli"
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
@@ -18,7 +19,7 @@ func TestCreateOrder(t *testing.T) {
 
 	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
-	seeAmountBeforeFee := "100000000000000000" // 0.1 ETH
+	sellAmountBeforeFee := "10000000000000000" // 0.01 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
@@ -35,15 +36,16 @@ func TestCreateOrder(t *testing.T) {
 		SigningScheme:       util.SigningSchemeConfig[network], // ethsign or eip712
 		OnchainOrder:        false,
 		Kind:                "sell",
-		SellAmountBeforeFee: seeAmountBeforeFee,
+		SellAmountBeforeFee: sellAmountBeforeFee,
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, err := client.Quote(quoteReq)
+	quoteResp, code, err := client.Quote(context.Background(), quoteReq)
 	if err != nil {
 		t.Fatal(err)
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
+	t.Logf("statusCode: %v", code)
 	t.Logf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
@@ -87,18 +89,18 @@ func TestCreateOrder(t *testing.T) {
 	}
 
 	// 4) Place Trade order
-	resp, err := client.CreateOrder(order)
+	resp, code, err := client.CreateOrder(context.Background(), order)
 	if err != nil {
 		t.Fatal(err)
 	}
 	uid := *resp
-	t.Logf("tx id: %v", uid)
+	t.Logf("order id: %v", uid)
 }
 
 func CreateOrderHandler(client *go_cowswap.Client, network string) (string, error) {
 	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
-	seeAmountBeforeFee := "200000000000000000" // 0.1 ETH
+	seeAmountBeforeFee := "10000000000000000" // 0.01 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
@@ -119,11 +121,12 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, err := client.Quote(quoteReq)
+	quoteResp, code, err := client.Quote(context.Background(), quoteReq)
 	if err != nil {
 		return "", err
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
+	fmt.Printf("statusCode: %v", code)
 	fmt.Printf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
@@ -168,7 +171,7 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 	}
 
 	// 4) Place Trade order
-	resp, err := client.CreateOrder(order)
+	resp, code, err := client.CreateOrder(context.Background(), order)
 	if err != nil {
 		fmt.Print(err)
 	}

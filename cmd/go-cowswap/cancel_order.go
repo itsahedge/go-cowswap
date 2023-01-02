@@ -1,10 +1,32 @@
 package go_cowswap
 
-type CancelOrder struct {
-	OrderUidsStr  string `json:"order_uids_string"`
-	OrderUids     []byte `json:"order_uids"`
-	Signature     string `json:"signature"`
-	SigningScheme string `json:"signing_scheme"`
+import "C"
+import (
+	"context"
+)
+
+type CancelOrderReq struct {
+	OrderUids     []string `json:"orderUids"`
+	Signature     string   `json:"signature"`
+	SigningScheme string   `json:"signingScheme"`
 }
 
-//TODO add http handler
+func (c *Client) CancelOrder(ctx context.Context, uid string) (*string, int, error) {
+	endpoint := "/orders"
+	signature, _, err := c.SignCancelOrder(uid)
+	if err != nil {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "sign_cancel_order_error", Description: err.Error()}
+	}
+	uids := []string{uid}
+	reqPayload := &CancelOrderReq{
+		Signature:     signature,
+		OrderUids:     uids,
+		SigningScheme: "eip712",
+	}
+	var dataRes string
+	statusCode, err := c.doRequest(ctx, endpoint, "DELETE", &dataRes, reqPayload)
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
+	}
+	return &dataRes, statusCode, nil
+}

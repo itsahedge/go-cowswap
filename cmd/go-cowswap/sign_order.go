@@ -12,12 +12,12 @@ import (
 )
 
 // SignOrder builds the CounterOrder from its Hash, Signs the Hash & Adds Signature
-func (C *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
-	hash, err := C.Hash(order)
+func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
+	hash, err := c.Hash(order)
 	if err != nil {
 		return nil, fmt.Errorf("computing order hash: %v\n", err)
 	}
-	signatureBytes, err := C.SignHash(hash.Bytes(), C.TransactionSigner.PrivateKey)
+	signatureBytes, err := c.SignHash(hash.Bytes(), c.TransactionSigner.PrivateKey)
 	if err != nil {
 		return nil, fmt.Errorf("signing order hash: %v\n", err)
 	}
@@ -26,7 +26,7 @@ func (C *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
 }
 
 // Hash computes this counter order's hash.
-func (C *Client) Hash(o *CounterOrder) (common.Hash, error) {
+func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 	var message = map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
@@ -43,7 +43,7 @@ func (C *Client) Hash(o *CounterOrder) (common.Hash, error) {
 	}
 
 	domain := util.Domain
-	domain.ChainId = math.NewHexOrDecimal256(C.ChainId.Int64())
+	domain.ChainId = math.NewHexOrDecimal256(c.ChainId.Int64())
 
 	typedData := util.TypedData
 	typedData.Domain = domain
@@ -62,7 +62,7 @@ func (C *Client) Hash(o *CounterOrder) (common.Hash, error) {
 }
 
 // SignHash sign the order hash with Transaction Signer Key
-func (C *Client) SignHash(hash []byte, pk *ecdsa.PrivateKey) ([]byte, error) {
+func (c *Client) SignHash(hash []byte, pk *ecdsa.PrivateKey) ([]byte, error) {
 	signatureBytes, err := crypto.Sign(accounts.TextHash(hash), pk)
 	if err != nil {
 		return nil, err

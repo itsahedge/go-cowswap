@@ -1,10 +1,7 @@
 package go_cowswap
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"net/http"
+	"context"
 )
 
 // CounterOrder represents a Gnosis CounterOrder.
@@ -26,33 +23,19 @@ type CounterOrder struct {
 	From              string `json:"from,omitempty"`
 }
 
-func (C *Client) CreateOrder(o *CounterOrder) (*string, error) {
-	bts, err := json.Marshal(o)
+func (c *Client) CreateOrder(ctx context.Context, o *CounterOrder) (*string, int, error) {
+	if c.TransactionSigner == nil {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_transaction_signer", Description: "invalid transaction signer"}
+	}
+	signedOrder, err := c.SignOrder(o)
 	if err != nil {
-		return nil, err
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "sign_order_error", Description: err.Error()}
 	}
-	endpoint := fmt.Sprintf("%s/orders", C.Host)
-	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(bts))
+	endpoint := "/orders"
+	var dataRes string
+	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, signedOrder)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	var out *string
-	switch resp.StatusCode {
-	case 200, 201:
-		return out, dec.Decode(&out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }

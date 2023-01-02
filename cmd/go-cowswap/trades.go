@@ -1,10 +1,8 @@
 package go_cowswap
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"fmt"
-	"net/http"
 )
 
 type GetTrades struct {
@@ -25,14 +23,14 @@ type TradesResponse []struct {
 }
 
 // GetTrades Exactly one of owner or order_uid has to be set.
-func (C *Client) GetTrades(opts *GetTrades) (*TradesResponse, error) {
+func (c *Client) GetTrades(ctx context.Context, opts *GetTrades) (*TradesResponse, int, error) {
+	endpoint := "/trades"
 	if opts == nil {
-		return nil, errors.New("must specify exactly one of owner or order_uid")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_payload", Description: "must specify exactly one of owner or order_uid"}
 	}
-	endpoint := fmt.Sprintf("%s/trades", C.Host)
 	if opts != nil {
 		if opts.Owner != "" && opts.OrderUid != "" {
-			return nil, errors.New("must specify exactly one of owner or order_uid")
+			return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_payload", Description: "must specify exactly one of owner or order_uid"}
 		}
 		if opts.Owner != "" {
 			endpoint = fmt.Sprintf("%s?owner=%s", endpoint, opts.Owner)
@@ -41,27 +39,10 @@ func (C *Client) GetTrades(opts *GetTrades) (*TradesResponse, error) {
 			endpoint = fmt.Sprintf("%s?orderUid=%s", endpoint, opts.OrderUid)
 		}
 	}
-	req, err := http.NewRequest("GET", endpoint, nil)
+	var dataRes TradesResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &TradesResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }

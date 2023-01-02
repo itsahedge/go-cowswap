@@ -1,10 +1,7 @@
 package go_cowswap
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"net/http"
+	"context"
 	"time"
 )
 
@@ -45,33 +42,12 @@ type QuoteResponse struct {
 	ID         int       `json:"id"`
 }
 
-func (C *Client) Quote(o *QuoteReq) (*QuoteResponse, error) {
-	bts, err := json.Marshal(o)
+func (c *Client) Quote(ctx context.Context, o *QuoteReq) (*QuoteResponse, int, error) {
+	endpoint := "/quote"
+	var dataRes QuoteResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, o)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/quote", C.Host), bytes.NewBuffer(bts))
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	//return C.decodeQuoteResponse(resp)
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &QuoteResponse{}
-		return out, dec.Decode(&out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }

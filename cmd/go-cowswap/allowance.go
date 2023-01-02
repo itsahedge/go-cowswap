@@ -12,7 +12,7 @@ import (
 	"math/big"
 )
 
-func (C *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress string) (*big.Int, error) {
+func (c *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress string) (*big.Int, error) {
 	if ownerAddress == "" {
 		return nil, errors.New("must provide an Owner Address")
 	}
@@ -20,7 +20,7 @@ func (C *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress st
 		return nil, errors.New("must provide a Token Address")
 	}
 	token := common.HexToAddress(tokenAddress)
-	contract, err := contract_binding.NewErc20(token, C.EthClient)
+	contract, err := contract_binding.NewErc20(token, c.EthClient)
 	if err != nil {
 		return nil, err
 	}
@@ -38,22 +38,20 @@ type ApproveAllowance struct {
 	WalletAddress string `json:"wallet_address"`
 }
 
-func (C *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount string) (*types.Transaction, error) {
-	if C.TransactionSigner == nil {
+func (c *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount string) (*types.Transaction, error) {
+	if c.TransactionSigner == nil {
 		return nil, errors.New("transaction signer not initialized")
 	}
 	var amountToApprove *big.Int
 	if tokenAmount == "" {
 		amountToApprove = new(big.Int).Lsh(big.NewInt(1), 256-7)
 	}
-
 	if tokenAmount != "" {
 		amountToApprove = new(big.Int).Set(big.NewInt(0))
 	}
-
-	auth := C.TransactionSigner.Auth
+	auth := c.TransactionSigner.Auth
 	token := common.HexToAddress(tokenAddress)
-	contract, err := contract_binding.NewErc20(token, C.EthClient)
+	contract, err := contract_binding.NewErc20(token, c.EthClient)
 	if err != nil {
 		panic(err)
 	}

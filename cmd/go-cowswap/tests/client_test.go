@@ -33,9 +33,10 @@ func TestNewClient(t *testing.T) {
 	for s, s2 := range addressList {
 		t.Logf("%v, %v \n", s, s2)
 	}
-	resp, err := client.Version()
+	resp, code, err := client.Version(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("statusCode: %v", code)
 	t.Logf("version resp: %v", resp)
 }

@@ -1,10 +1,8 @@
 package go_cowswap
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"fmt"
-	"net/http"
 	"time"
 )
 
@@ -44,35 +42,18 @@ type OrderByUidResponse struct {
 	OnchainUser string `json:"onchainUser"`
 }
 
-func (C *Client) GetOrdersByUid(uid string) (*OrderByUidResponse, error) {
+func (c *Client) GetOrdersByUid(ctx context.Context, uid string) (*OrderByUidResponse, int, error) {
 	if uid == "" {
-		return nil, errors.New("order UID not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_order_id", Description: "order UID not provided"}
 	}
-	endpoint := fmt.Sprintf("%s/orders/%s", C.Host, uid)
-
-	req, err := http.NewRequest("GET", endpoint, nil)
+	endpoint := fmt.Sprintf("/orders/%s", uid)
+	var dataRes OrderByUidResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
+	return &dataRes, statusCode, nil
 
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &OrderByUidResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
 }
 
 type OrdersByTxHashResponse []struct {
@@ -109,34 +90,17 @@ type OrdersByTxHashResponse []struct {
 	} `json:"interactions"`
 }
 
-func (C *Client) GetOrdersByTxHash(txHash string) (*OrdersByTxHashResponse, error) {
+func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
 	if txHash == "" {
-		return nil, errors.New("transaction hash not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "transaction hash not provided"}
 	}
-	endpoint := fmt.Sprintf("%s/transactions/%s/orders", C.Host, txHash)
-	req, err := http.NewRequest("GET", endpoint, nil)
+	endpoint := fmt.Sprintf("%s/transactions/%s/orders", c.Host, txHash)
+	var dataRes OrdersByTxHashResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &OrdersByTxHashResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }
 
 type OrdersPaginated struct {
@@ -178,48 +142,24 @@ type OrdersByUserResponse []struct {
 	} `json:"interactions"`
 }
 
-func (C *Client) GetOrdersByUser(userAddress string, opts *OrdersPaginated) (*OrdersByTxHashResponse, error) {
+func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*OrdersByUserResponse, int, error) {
 	if userAddress == "" {
-		return nil, errors.New("user address not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_user_address", Description: "user address not provided"}
 	}
-	endpoint := fmt.Sprintf("%s/account/%s/orders", C.Host, userAddress)
-	fmt.Println("endpoint: ", endpoint)
+	endpoint := fmt.Sprintf("/account/%s/orders", userAddress)
+	var queries = make(map[string]interface{})
 	if opts != nil {
-		if opts.Limit != "" && opts.Offset != "" {
-			endpoint = fmt.Sprintf("%s?offset=%v&limit=%v", endpoint, opts.Offset, opts.Limit)
-		} else {
-			if opts.Limit != "" {
-				endpoint = fmt.Sprintf("%s?limit=%v", endpoint, opts.Limit)
-			}
-			if opts.Offset != "" {
-				endpoint = fmt.Sprintf("%s?offset=%v", endpoint, opts.Offset)
-			}
+		if opts.Limit != "" {
+			queries["limit"] = opts.Limit
+		}
+		if opts.Offset != "" {
+			queries["offset"] = opts.Offset
 		}
 	}
-
-	req, err := http.NewRequest("GET", endpoint, nil)
+	var dataRes OrdersByUserResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil, queries)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	fmt.Println("req:", req)
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &OrdersByTxHashResponse{}
-		return out, dec.Decode(out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }
