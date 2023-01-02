@@ -2,7 +2,6 @@ package go_cowswap
 
 import (
 	"crypto/ecdsa"
-	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -31,7 +30,6 @@ func NewSigner(privateKey string, chainId *big.Int) (*TransactionSigner, error) 
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("auth:", auth)
 	signer := &TransactionSigner{
 		PrivateKey:   pk,
 		SignerPubKey: signerPubKey,
