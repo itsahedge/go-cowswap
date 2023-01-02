@@ -38,7 +38,7 @@ func EncodeForSigning(typedData apitypes.TypedData) (hash common.Hash, err error
 	return
 }
 
-func VerifySigTest(from, sigHex string, msg []byte) bool {
+func VerifySig(from, sigHex string, msg []byte) bool {
 	sig := hexutil.MustDecode(sigHex)
 	//msg = accounts.TextHash(msg)
 	if sig[crypto.RecoveryIDOffset] == 27 || sig[crypto.RecoveryIDOffset] == 28 {
