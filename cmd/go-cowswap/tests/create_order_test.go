@@ -1,6 +1,7 @@
 package go_cowswap
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
@@ -39,11 +40,12 @@ func TestCreateOrder(t *testing.T) {
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, err := client.Quote(quoteReq)
+	quoteResp, code, err := client.Quote(context.Background(), quoteReq)
 	if err != nil {
 		t.Fatal(err)
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
+	t.Logf("statusCode: %v", code)
 	t.Logf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
@@ -119,11 +121,12 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, err := client.Quote(quoteReq)
+	quoteResp, code, err := client.Quote(context.Background(), quoteReq)
 	if err != nil {
 		return "", err
 	}
 	r, _ := json.MarshalIndent(quoteResp, "", "  ")
+	fmt.Printf("statusCode: %v", code)
 	fmt.Printf("%v", string(r))
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount

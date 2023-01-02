@@ -1,6 +1,7 @@
 package go_cowswap_test
 
 import (
+	"context"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"testing"
@@ -23,9 +24,10 @@ func TestClient_GetQuote(t *testing.T) {
 		SellAmountBeforeFee: "1000000000000000000",
 		From:                util.Options.EthAddress,
 	}
-	res, err := client.Quote(o)
+	res, code, err := client.Quote(context.Background(), o)
 	if err != nil {
 		t.Fatalf("GetQuote err: %v", err)
 	}
+	t.Logf("statusCode: %v", code)
 	t.Logf("%v", res)
 }
