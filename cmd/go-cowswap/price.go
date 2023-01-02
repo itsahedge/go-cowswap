@@ -1,38 +1,20 @@
 package go_cowswap
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"net/http"
 )
 
 type NativePriceResponse struct {
 	Price float64 `json:"price"`
 }
 
-func (C *Client) GetNativePrice(tokenAddress string) (*NativePriceResponse, error) {
-	endpoint := fmt.Sprintf("%s/token/%s/native_price", C.Host, tokenAddress)
-	req, err := http.NewRequest("GET", endpoint, nil)
+func (c *Client) GetNativePrice(ctx context.Context, tokenAddress string) (*NativePriceResponse, int, error) {
+	endpoint := fmt.Sprintf("/token/%s/native_price", tokenAddress)
+	var dataRes NativePriceResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
-
-	resp, err := C.Http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 200, 201:
-		out := &NativePriceResponse{}
-		return out, dec.Decode(&out)
-	default:
-		err := &ErrorResponse{}
-		if err2 := dec.Decode(err); err2 != nil {
-			return nil, err2
-		}
-		return nil, err
-	}
+	return &dataRes, statusCode, nil
 }

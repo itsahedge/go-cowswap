@@ -1,6 +1,7 @@
 package go_cowswap
 
 import (
+	"context"
 	"encoding/json"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
@@ -10,10 +11,11 @@ import (
 func TestClient_GetNativePrice(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	token := util.TOKEN_ADDRESSES["goerli"]["GNO"]
-	res, err := client.GetNativePrice(token)
+	res, code, err := client.GetNativePrice(context.Background(), token)
 	if err != nil {
 		t.Fatalf("GetNativePrice err: %v", err)
 	}
 	r, _ := json.MarshalIndent(res, "", "  ")
+	t.Logf("statusCode: %v", code)
 	t.Logf("%v", string(r))
 }
