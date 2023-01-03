@@ -10,6 +10,7 @@ import (
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	contract_binding "github.com/itsahedge/go-cowswap/pkg/contracts/generated"
 	"math/big"
+	"strconv"
 )
 
 func (c *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress string) (*big.Int, error) {
@@ -47,7 +48,8 @@ func (c *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount str
 		amountToApprove = new(big.Int).Lsh(big.NewInt(1), 256-7)
 	}
 	if tokenAmount != "" {
-		amountToApprove = new(big.Int).Set(big.NewInt(0))
+		i, _ := strconv.ParseInt(tokenAmount, 10, 64)
+		amountToApprove = new(big.Int).Set(big.NewInt(i))
 	}
 	auth := c.TransactionSigner.Auth
 	token := common.HexToAddress(tokenAddress)

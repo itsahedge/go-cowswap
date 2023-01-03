@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func Test_CreateOrder(t *testing.T) {
+func TestClient_CreateOrder(t *testing.T) {
 	network := "goerli"
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {

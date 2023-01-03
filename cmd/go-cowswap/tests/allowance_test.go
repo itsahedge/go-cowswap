@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestGetAllowance(t *testing.T) {
+func TestClient_GetAllowance(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
@@ -23,7 +23,7 @@ func TestGetAllowance(t *testing.T) {
 	t.Logf("%v token allowance: %v \n", tokenAddress, string(result))
 }
 
-func TestSetAllowance(t *testing.T) {
+func TestClient_SetAllowance(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
