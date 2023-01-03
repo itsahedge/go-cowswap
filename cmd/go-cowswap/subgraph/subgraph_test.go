@@ -2,40 +2,36 @@ package subgraph
 
 import (
 	"context"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
-	"github.com/machinebox/graphql"
-	"log"
+	"encoding/json"
 	"testing"
 )
 
-func TestNew_GraphqlClient(t *testing.T) {
-	gql_client := graphql.NewClient(util.SUBGRAPH_MAINNET)
-	req := graphql.NewRequest(`
-        {
-			users(first: 5) {
-				id
-				address
-				firstTradeTimestamp
-				ordersPlaced {
-				  id
-				}
-			}
-		}
-    `)
-
-	// set any variables
-	req.Var("key", "value")
-
-	// set header fields
-	req.Header.Set("Cache-Control", "no-cache")
-
-	// define a Context for the request
-	ctx := context.Background()
-
-	// run it and capture the response
-	var respData any
-	if err := gql_client.Run(ctx, req, &respData); err != nil {
-		log.Fatal(err)
+func TestGqlClient_NewClient(t *testing.T) {
+	client, err := NewSubgraphClient()
+	if err != nil {
+		t.Fatal(err)
 	}
-	t.Log(respData)
+	t.Logf("client: %v", client)
+}
+
+func TestGqlClient_Users(t *testing.T) {
+	gql_client, err := NewSubgraphClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	vars := map[string]interface{}{
+		"first": 1,
+		//"block": map[string]interface{}{
+		//	"number_gte": 15114083,
+		//},
+	}
+
+	users, err := gql_client.GetUsers(context.Background(), vars)
+	if err != nil {
+		// handle error
+	}
+
+	r, _ := json.MarshalIndent(users, "", "  ")
+	t.Logf("%v", string(r))
 }
