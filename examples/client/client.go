@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
+	cowswap "github.com/itsahedge/go-cowswap"
 	"log"
 
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap/util"
 )
 
 func main() {
