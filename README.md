@@ -24,7 +24,7 @@ go get github.com/itsahedge/go-cowswap
 
 
 
-The following example demonstrates how to use the `Version()` function to get the version of the Ethereum client:
+The following example demonstrates how to initialize the SDK with Read & Write Functions:
 
 ```go
 package main
@@ -32,9 +32,9 @@ package main
 import (
 	"context"
 	"fmt"
+	cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
 	"log"
 
-	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 )
 
@@ -47,17 +47,22 @@ func main() {
 		EthAddress: "YOUR-ETHEREUM-ADDRESS",
 		PrivateKey: "YOUR-PRIVATE-KEY",
 	}
-	client, err := go_cowswap.NewClient(options)
+	client, err := cowswap.NewClient(options)
 	if err != nil {
 		log.Fatal(err)
 	}
+	ctx := context.Background()
 
-	// Call the Version function to fetch /version
-	version, code, err := client.Version(context.Background())
+	// Fetch the Chain ID and Block Number from the Client
+	chainId, err := client.EthClient.ChainID(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("status code: %v, version: %v", code, version)
+	block, err := client.EthClient.BlockNumber(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("chaind ID: %v, block: %v", chainId, block)
 }
 ```
 
