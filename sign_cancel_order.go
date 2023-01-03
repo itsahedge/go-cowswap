@@ -5,7 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	util2 "github.com/itsahedge/go-cowswap/util"
 )
 
 // SignCancelOrder generates the order signature
@@ -17,15 +17,15 @@ func (c *Client) SignCancelOrder(uid string) (string, *apitypes.TypedData, error
 		Name:              "Gnosis Protocol",
 		Version:           "v2",
 		ChainId:           math.NewHexOrDecimal256(c.ChainId.Int64()),
-		VerifyingContract: util.GPv2Settlement,
+		VerifyingContract: util2.GPv2Settlement,
 	}
-	util.TypedData.PrimaryType = "OrderCancellations"
-	util.TypedData.Domain = domain
-	util.TypedData.Message = message
-	sigBytes, err := util.SignTypedData(util.TypedData, c.TransactionSigner.PrivateKey)
+	util2.TypedData.PrimaryType = "OrderCancellations"
+	util2.TypedData.Domain = domain
+	util2.TypedData.Message = message
+	sigBytes, err := util2.SignTypedData(util2.TypedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
 		return "", nil, err
 	}
 	orderSignature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
-	return orderSignature, &util.TypedData, nil
+	return orderSignature, &util2.TypedData, nil
 }

@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	go_cowswap2 "github.com/itsahedge/go-cowswap"
+	"github.com/itsahedge/go-cowswap/util"
 	"strings"
 	"testing"
 )
 
 func TestClient_CreateOrder(t *testing.T) {
 	network := "goerli"
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap2.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func TestClient_CreateOrder(t *testing.T) {
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
 	// 1) Fetch Order quote
-	quoteReq := &go_cowswap.QuoteReq{
+	quoteReq := &go_cowswap2.QuoteReq{
 		SellToken:           sellToken,
 		BuyToken:            buyToken,
 		Receiver:            strings.ToLower(receiver),
@@ -61,7 +61,7 @@ func TestClient_CreateOrder(t *testing.T) {
 	//t.Logf("ValidTo: %v ", validToFromQuote)
 
 	// 2) Build the Order
-	order := &go_cowswap.CounterOrder{
+	order := &go_cowswap2.CounterOrder{
 		SellToken:         sellToken,
 		BuyToken:          buyToken,
 		Receiver:          strings.ToLower(receiver),
@@ -97,7 +97,7 @@ func TestClient_CreateOrder(t *testing.T) {
 	t.Logf("order id: %v", uid)
 }
 
-func CreateOrderHandler(client *go_cowswap.Client, network string) (string, error) {
+func CreateOrderHandler(client *go_cowswap2.Client, network string) (string, error) {
 	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
 	seeAmountBeforeFee := "10000000000000000" // 0.01 ETH
@@ -105,7 +105,7 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 	from := client.TransactionSigner.SignerPubKey.Hex()
 
 	// 1) Fetch Order quote
-	quoteReq := &go_cowswap.QuoteReq{
+	quoteReq := &go_cowswap2.QuoteReq{
 		SellToken:           sellToken,
 		BuyToken:            buyToken,
 		Receiver:            strings.ToLower(receiver),
@@ -143,7 +143,7 @@ func CreateOrderHandler(client *go_cowswap.Client, network string) (string, erro
 	fmt.Printf("ValidTo: %v \n", validToFromQuote)
 
 	// 2) Build the Order
-	order := &go_cowswap.CounterOrder{
+	order := &go_cowswap2.CounterOrder{
 		SellToken:         sellToken,
 		BuyToken:          buyToken,
 		Receiver:          strings.ToLower(receiver),
