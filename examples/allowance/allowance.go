@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	cowswap "github.com/itsahedge/go-cowswap"
+	"github.com/itsahedge/go-cowswap/util"
 	"log"
 )
 
