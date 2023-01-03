@@ -2,13 +2,13 @@ package go_cowswap
 
 import (
 	"context"
-	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
-	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap"
+	util2 "github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func Test_VerifySignCancelOrder(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util2.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -18,19 +18,19 @@ func Test_VerifySignCancelOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	////// CHECK SIGNATURE TO VERIFY OWNER
-	hash, err := util.EncodeForSigning(*typedData)
+	hash, err := util2.EncodeForSigning(*typedData)
 	if err != nil {
 		t.Logf("encode for signing err: %v", err)
 	}
 	checkAddress := client.TransactionSigner.SignerPubKey
-	isOwner := util.VerifySig(checkAddress.Hex(), sig, hash.Bytes())
+	isOwner := util2.VerifySig(checkAddress.Hex(), sig, hash.Bytes())
 	t.Logf("order signature: %v", sig)
 	t.Logf("typed data: %v", typedData)
 	t.Logf("signature owner is verified: %v \n", isOwner)
 }
 
 func Test_CancelOrder(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(util2.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
