@@ -18,8 +18,48 @@ go get github.com/itsahedge/go-cowswap
 
 ## Getting Started
 
-To start using this SDK...
 
 ### Instantiating the SDK
 
-WIP
+
+
+
+The following example demonstrates how to use the `Version()` function to get the version of the Ethereum client:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
+	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
+)
+
+func main() {
+	// Initialize the go-cowswap client on Goerli with default RPC
+	options := util.ConfigOpts{
+		Network:    "goerli",
+		Host:       util.HostConfig["goerli"],
+		RpcUrl:     util.RpcConfig["goerli"],
+		EthAddress: "YOUR-ETHEREUM-ADDRESS",
+		PrivateKey: "YOUR-PRIVATE-KEY",
+	}
+	client, err := go_cowswap.NewClient(options)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Call the Version function to fetch /version
+	version, code, err := client.Version(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("status code: %v, version: %v", code, version)
+}
+```
+
+
+
