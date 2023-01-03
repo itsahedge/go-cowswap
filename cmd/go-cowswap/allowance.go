@@ -10,6 +10,7 @@ import (
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	contract_binding "github.com/itsahedge/go-cowswap/pkg/contracts/generated"
 	"math/big"
+	"strconv"
 )
 
 func (c *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress string) (*big.Int, error) {
@@ -43,14 +44,13 @@ func (c *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount str
 		return nil, errors.New("transaction signer not initialized")
 	}
 	var amountToApprove *big.Int
-	if tokenAmount == "" || tokenAmount == "infinite" {
+	if tokenAmount == "" {
 		amountToApprove = new(big.Int).Lsh(big.NewInt(1), 256-7)
-		fmt.Println(amountToApprove) // 904625697166532776746648320380374280103671755200316906558262375061821325312
 	}
-	// TODO: add specific tokenAmount handler
-	//if tokenAmount != "" {
-	//	fmt.Println("TODO: tokenAmount was specified")
-	//}
+	if tokenAmount != "" {
+		i, _ := strconv.ParseInt(tokenAmount, 10, 64)
+		amountToApprove = new(big.Int).Set(big.NewInt(i))
+	}
 	auth := c.TransactionSigner.Auth
 	token := common.HexToAddress(tokenAddress)
 	contract, err := contract_binding.NewErc20(token, c.EthClient)

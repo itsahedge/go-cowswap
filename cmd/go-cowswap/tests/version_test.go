@@ -9,9 +9,10 @@ import (
 
 func TestClient_GetVersion(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
-	res, statusCode, err := client.Version(context.Background())
+	res, code, err := client.Version(context.Background())
 	if err != nil {
 		t.Fatalf("Version err: %v", err)
 	}
-	t.Logf("status code: %v, response: %v", statusCode, res)
+	t.Logf("statusCode: %v", code)
+	t.Logf("%v", res)
 }

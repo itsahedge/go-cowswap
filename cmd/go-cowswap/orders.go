@@ -2,7 +2,6 @@ package go_cowswap
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 )
@@ -45,15 +44,16 @@ type OrderByUidResponse struct {
 
 func (c *Client) GetOrdersByUid(ctx context.Context, uid string) (*OrderByUidResponse, int, error) {
 	if uid == "" {
-		return nil, 404, errors.New("order UID not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_order_id", Description: "order UID not provided"}
 	}
 	endpoint := fmt.Sprintf("/orders/%s", uid)
 	var dataRes OrderByUidResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
-	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("order UID not found")
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
+
 }
 
 type OrdersByTxHashResponse []struct {
@@ -92,13 +92,13 @@ type OrdersByTxHashResponse []struct {
 
 func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
 	if txHash == "" {
-		return nil, 404, errors.New("transaction hash not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "transaction hash not provided"}
 	}
-	endpoint := fmt.Sprintf("/transactions/%s/orders", txHash)
+	endpoint := fmt.Sprintf("%s/transactions/%s/orders", c.Host, txHash)
 	var dataRes OrdersByTxHashResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
-	if err != nil || statusCode == 404 {
-		return nil, statusCode, errors.New("transaction hash not found")
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }
@@ -144,7 +144,7 @@ type OrdersByUserResponse []struct {
 
 func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*OrdersByUserResponse, int, error) {
 	if userAddress == "" {
-		return nil, 404, errors.New("user address not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_user_address", Description: "user address not provided"}
 	}
 	endpoint := fmt.Sprintf("/account/%s/orders", userAddress)
 	var queries = make(map[string]interface{})
@@ -159,7 +159,7 @@ func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *
 	var dataRes OrdersByUserResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil, queries)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }

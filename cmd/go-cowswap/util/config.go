@@ -15,9 +15,9 @@ type ConfigOpts struct {
 }
 
 var Options = ConfigOpts{
-	Network:    "mainnet",
-	Host:       HostConfig["mainnet"],
-	RpcUrl:     RpcConfig["mainnet"],
+	Network:    "goerli",
+	Host:       HostConfig["goerli"],
+	RpcUrl:     RpcConfig["goerli"],
 	EthAddress: "",
 	PrivateKey: "",
 }
@@ -38,6 +38,18 @@ var RpcConfig = map[string]string{
 	"mainnet": RPC_MAINNET,
 	"goerli":  RPC_GOERLI,
 	"xdai":    RPC_XDAI,
+}
+
+var ChainIds = map[string]int{
+	"mainnet": 1,
+	"goerli":  5,
+	"xdai":    100,
+}
+
+var SigningSchemeConfig = map[string]string{
+	"mainnet": "eip712",
+	"goerli":  "ethsign",
+	"xdai":    "ethsign",
 }
 
 var Eip712OrderTypes = apitypes.Types{
@@ -109,11 +121,25 @@ var Eip712OrderTypes = apitypes.Types{
 			Type: "string",
 		},
 	},
+	"OrderCancellations": {
+		{
+			Name: "orderUids",
+			Type: "bytes[]",
+		},
+	},
 }
 
+// Default chainId is mainnet
 var Domain = apitypes.TypedDataDomain{
 	Name:              "Gnosis Protocol",
 	Version:           "v2",
 	ChainId:           math.NewHexOrDecimal256(1),
 	VerifyingContract: GPv2Settlement,
+}
+
+var TypedData = apitypes.TypedData{
+	Types:       Eip712OrderTypes,
+	PrimaryType: "Order",
+	Domain:      Domain,
+	Message:     map[string]interface{}{},
 }

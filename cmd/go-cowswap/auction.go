@@ -2,7 +2,6 @@ package go_cowswap
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 )
@@ -59,7 +58,7 @@ func (c *Client) GetAuction(ctx context.Context) (*AuctionResponse, int, error) 
 	var dataRes AuctionResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }
@@ -94,14 +93,14 @@ type SolverAuctionByIdResponse struct {
 
 // GetSolverAuctionById Returns the competition information by auction id.
 func (c *Client) GetSolverAuctionById(ctx context.Context, auctionId int) (*SolverAuctionByIdResponse, int, error) {
-	if auctionId == 0 {
-		return nil, 404, errors.New("auction id not provided")
+	if auctionId < 0 {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_auction_id", Description: "invalid auction id"}
 	}
 	endpoint := fmt.Sprintf("/solver_competition/%v", auctionId)
 	var dataRes SolverAuctionByIdResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }
@@ -137,13 +136,13 @@ type SolverAuctionByTxHashResponse struct {
 // GetSolverAuctionByTxHash Returns the competition information by transaction hash.
 func (c *Client) GetSolverAuctionByTxHash(ctx context.Context, txHash string) (*SolverAuctionByTxHashResponse, int, error) {
 	if txHash == "" {
-		return nil, 404, errors.New("transaction hash not provided")
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "invalid tx hash"}
 	}
-	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%v", txHash)
+	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%s", txHash)
 	var dataRes SolverAuctionByTxHashResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }

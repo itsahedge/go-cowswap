@@ -8,13 +8,13 @@ import (
 	"testing"
 )
 
-func TestCheckAllowance(t *testing.T) {
+func TestClient_GetAllowance(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
 	ownerAddress := util.Options.EthAddress
-	tokenAddress := util.TOKEN_ADDRESSES["mainnet"]["WETH"]
+	tokenAddress := util.TOKEN_ADDRESSES["goerli"]["COW"]
 	allowance, err := client.GetAllowance(context.Background(), ownerAddress, tokenAddress)
 	if err != nil {
 		t.Fatalf("GetAllowance err: %v", err)
@@ -23,13 +23,13 @@ func TestCheckAllowance(t *testing.T) {
 	t.Logf("%v token allowance: %v \n", tokenAddress, string(result))
 }
 
-func TestApproveSpender(t *testing.T) {
+func TestClient_SetAllowance(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
-	tokenAmount := ""
-	tokenToApprove := util.TOKEN_ADDRESSES["mainnet"]["USDC"]
+	tokenAmount := "0"
+	tokenToApprove := util.TOKEN_ADDRESSES["goerli"]["COW"]
 	tx, err := client.SetAllowance(context.Background(), tokenToApprove, tokenAmount)
 	if err != nil {
 		t.Fatalf("SetAllowance err : %v", err)

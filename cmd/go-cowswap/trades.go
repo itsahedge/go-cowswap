@@ -2,7 +2,7 @@ package go_cowswap
 
 import (
 	"context"
-	"errors"
+	"fmt"
 )
 
 type GetTrades struct {
@@ -24,26 +24,25 @@ type TradesResponse []struct {
 
 // GetTrades Exactly one of owner or order_uid has to be set.
 func (c *Client) GetTrades(ctx context.Context, opts *GetTrades) (*TradesResponse, int, error) {
-	if opts == nil {
-		return nil, 400, errors.New("must specify exactly one of owner or order_uid")
-	}
 	endpoint := "/trades"
-	var queries = make(map[string]interface{})
+	if opts == nil {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_payload", Description: "must specify exactly one of owner or order_uid"}
+	}
 	if opts != nil {
 		if opts.Owner != "" && opts.OrderUid != "" {
-			return nil, 400, errors.New("Must specify exactly one of owner or order_uid.")
+			return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_payload", Description: "must specify exactly one of owner or order_uid"}
 		}
 		if opts.Owner != "" {
-			queries["owner"] = opts.Owner
+			endpoint = fmt.Sprintf("%s?owner=%s", endpoint, opts.Owner)
 		}
 		if opts.OrderUid != "" {
-			queries["orderUid"] = opts.OrderUid
+			endpoint = fmt.Sprintf("%s?orderUid=%s", endpoint, opts.OrderUid)
 		}
 	}
 	var dataRes TradesResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil, queries)
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }

@@ -8,27 +8,28 @@ import (
 	"testing"
 )
 
-// TODO: handle responses for empty orders
 func TestClient_GetOrdersByUid(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	uid := ""
-	res, statusCode, err := client.GetOrdersByUid(context.Background(), uid)
+	res, code, err := client.GetOrdersByUid(context.Background(), uid)
 	if err != nil {
 		t.Fatalf("GetOrderByUid err: %v", err)
 	}
 	r, _ := json.MarshalIndent(res, "", "  ")
-	t.Logf("status code: %v\n%v", statusCode, string(r))
+	t.Logf("statusCode: %v", code)
+	t.Logf("%v", string(r))
 }
 
 func TestClient_GetOrdersByTxHash(t *testing.T) {
 	client, err := go_cowswap.NewClient(util.Options)
 	txHash := ""
-	res, statusCode, err := client.GetOrdersByTxHash(context.Background(), txHash)
+	res, code, err := client.GetOrdersByTxHash(context.Background(), txHash)
 	if err != nil {
 		t.Fatalf("GetOrdersByTxHash err: %v", err)
 	}
 	r, _ := json.MarshalIndent(res, "", "  ")
-	t.Logf("status code: %v\n%v", statusCode, string(r))
+	t.Logf("statusCode: %v", code)
+	t.Logf("%v", string(r))
 }
 
 func TestClient_GetOrdersByUser(t *testing.T) {
@@ -38,10 +39,11 @@ func TestClient_GetOrdersByUser(t *testing.T) {
 		Limit:  "3",
 		Offset: "1",
 	}
-	res, statusCode, err := client.GetOrdersByUser(context.Background(), userAddress, opts)
+	res, code, err := client.GetOrdersByUser(context.Background(), userAddress, opts)
 	if err != nil {
 		t.Fatalf("GetOrdersByUser err: %v", err)
 	}
 	r, _ := json.MarshalIndent(res, "", "  ")
-	t.Logf("status code: %v\n%v", statusCode, string(r))
+	t.Logf("statusCode: %v", code)
+	t.Logf("%v", string(r))
 }

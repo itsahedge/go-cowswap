@@ -2,7 +2,6 @@ package go_cowswap
 
 import (
 	"context"
-	"errors"
 )
 
 type VersionResponse struct {
@@ -16,7 +15,7 @@ func (c *Client) Version(ctx context.Context) (*VersionResponse, int, error) {
 	var dataRes VersionResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
-		return nil, statusCode, errors.New("not found")
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }

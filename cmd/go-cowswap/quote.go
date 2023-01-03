@@ -42,12 +42,12 @@ type QuoteResponse struct {
 	ID         int       `json:"id"`
 }
 
-func (c *Client) GetQuote(ctx context.Context, o *QuoteReq) (*QuoteResponse, int, error) {
+func (c *Client) Quote(ctx context.Context, o *QuoteReq) (*QuoteResponse, int, error) {
 	endpoint := "/quote"
 	var dataRes QuoteResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, o)
 	if err != nil {
-		return nil, statusCode, err
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
 }

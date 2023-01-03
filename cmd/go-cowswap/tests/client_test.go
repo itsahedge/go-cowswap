@@ -1,20 +1,14 @@
 package go_cowswap_test
 
 import (
-	"fmt"
+	"context"
 	go_cowswap "github.com/itsahedge/go-cowswap/cmd/go-cowswap"
 	"github.com/itsahedge/go-cowswap/cmd/go-cowswap/util"
 	"testing"
 )
 
 func TestNewClient(t *testing.T) {
-	network := "mainnet"
-	options := util.ConfigOpts{
-		Network: network,
-		Host:    util.HostConfig[network],
-		RpcUrl:  util.RpcConfig[network],
-	}
-	client, err := go_cowswap.NewClient(options)
+	client, err := go_cowswap.NewClient(util.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,8 +18,25 @@ func TestNewClient(t *testing.T) {
 		t.Logf("initialized client without a transaction signer: %v", client)
 	}
 
-	addressList := util.TOKEN_ADDRESSES[network]
-	for s, s2 := range addressList {
-		fmt.Printf("%v, %v \n", s, s2)
+	chainId, err := client.EthClient.ChainID(context.Background())
+	if err != nil {
+		t.Fatal(err)
 	}
+	t.Logf("%v", chainId)
+
+	block, err := client.EthClient.BlockNumber(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("current block: %v", block)
+	addressList := util.TOKEN_ADDRESSES[util.Options.Network]
+	for s, s2 := range addressList {
+		t.Logf("%v, %v \n", s, s2)
+	}
+	resp, code, err := client.Version(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("statusCode: %v", code)
+	t.Logf("version resp: %v", resp)
 }
