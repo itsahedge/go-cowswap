@@ -14,6 +14,12 @@ const (
 	RPC_XDAI    = "https://xdai-rpc.gateway.pokt.network"
 )
 
+const (
+	SUBGRAPH_MAINNET      = "https://api.thegraph.com/subgraphs/name/cowprotocol/cow"
+	SUBGRAPH_GOERLI       = "https://api.thegraph.com/subgraphs/name/cowprotocol/cow-goerli"
+	SUBGRAPH_GNOSIS_CHAIN = "https://api.thegraph.com/subgraphs/name/cowprotocol/cow-gc"
+)
+
 var ETHEREUM_TOKEN_LIST = map[string]string{
 	"WETH": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
 	"USDC": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
