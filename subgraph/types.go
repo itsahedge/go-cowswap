@@ -60,6 +60,10 @@ type Order struct {
 	Trades              []Trade `json:"trades,omitempty"`
 }
 
+type Trades struct {
+	Trades []Trade `json:"trades,omitempty"`
+}
+
 type Trade struct {
 	ID            string     `json:"id"`
 	Timestamp     int        `json:"timestamp,omitempty"`
@@ -71,7 +75,11 @@ type Trade struct {
 	SellAmount    string     `json:"sellAmount,omitempty"`
 	BuyAmountUsd  string     `json:"buyAmountUsd,omitempty"`
 	SellAmountUsd string     `json:"sellAmountUsd,omitempty"`
-	SellToken     Token      `json:"sellToken"`
+	BuyAmountEth  string     `json:"buyAmountEth,omitempty"`
+	SellAmountEth string     `json:"sellAmountEth,omitempty"`
+	SellToken     Token      `json:"sellToken,omitempty"`
+	BuyToken      Token      `json:"buyToken,omitempty"`
+	Order         Order      `json:"order,omitempty"`
 }
 
 type Settlement struct {
