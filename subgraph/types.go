@@ -93,3 +93,38 @@ type Settlement struct {
 type Settlements struct {
 	Settlements []Settlement `json:"settlements"`
 }
+
+type Bundle struct {
+	ID          string `json:"id"`
+	EthPriceUSD string `json:"ethPriceUSD"`
+}
+
+type Bundles struct {
+	Bundles []Bundle `json:"bundles"`
+}
+
+type UniswapPools struct {
+	UniswapPools []UniswapPool `json:"uniswapPools"`
+}
+
+type UniswapPool struct {
+	ID                     string       `json:"id"`
+	Liquidity              string       `json:"liquidity"`
+	Token0Price            string       `json:"token0Price"`
+	Token1Price            string       `json:"token1Price"`
+	Tick                   string       `json:"tick"`
+	TotalValueLockedToken0 string       `json:"totalValueLockedToken0"`
+	TotalValueLockedToken1 string       `json:"totalValueLockedToken1"`
+	Token0                 UniswapToken `json:"token0"`
+	Token1                 UniswapToken `json:"token1"`
+}
+
+type UniswapToken struct {
+	ID       string `json:"id"`
+	Address  string `json:"address"`
+	Name     string `json:"name"`
+	Symbol   string `json:"symbol"`
+	Decimals int    `json:"decimals"`
+	PriceEth string `json:"priceEth"`
+	PriceUsd string `json:"priceUsd"`
+}
