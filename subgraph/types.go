@@ -148,3 +148,21 @@ type Total struct {
 	FeesUsd        string `json:"feesUsd,omitempty"`
 	FeesEth        string `json:"feesEth,omitempty"`
 }
+
+type DailyTotals struct {
+	DailyTotals []DailyTotal `json:"dailyTotals"`
+}
+
+type DailyTotal struct {
+	ID             string  `json:"id"`
+	Timestamp      int     `json:"timestamp"`
+	TotalTokens    string  `json:"totalTokens"`
+	NumberOfTrades string  `json:"numberOfTrades"`
+	Orders         string  `json:"orders"`
+	Settlements    string  `json:"settlements"`
+	VolumeUsd      string  `json:"volumeUsd"`
+	VolumeEth      string  `json:"volumeEth"`
+	FeesUsd        string  `json:"feesUsd"`
+	FeesEth        string  `json:"feesEth"`
+	Tokens         []Token `json:"tokens"`
+}
