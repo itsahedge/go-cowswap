@@ -132,3 +132,19 @@ type UniswapToken struct {
 type UniswapTokens struct {
 	UniswapTokens []UniswapToken `json:"uniswapTokens"`
 }
+
+type Totals struct {
+	Totals []Total `json:"totals"`
+}
+
+type Total struct {
+	ID             string `json:"id"`
+	Tokens         string `json:"tokens,omitempty"`
+	Traders        string `json:"traders,omitempty"`
+	NumberOfTrades string `json:"numberOfTrades,omitempty"`
+	Settlements    string `json:"settlements,omitempty"`
+	VolumeUsd      string `json:"volumeUsd,omitempty"`
+	VolumeEth      string `json:"volumeEth,omitempty"`
+	FeesUsd        string `json:"feesUsd,omitempty"`
+	FeesEth        string `json:"feesEth,omitempty"`
+}
