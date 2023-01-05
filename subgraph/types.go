@@ -183,3 +183,22 @@ type HourlyTotal struct {
 	FeesEth        string  `json:"feesEth"`
 	Tokens         []Token `json:"tokens"`
 }
+
+type TokenDailyTotals struct {
+	TokenDailyTotals []TokenDailyTotal `json:"tokenDailyTotals"`
+}
+
+type TokenDailyTotal struct {
+	ID             string `json:"id"`
+	Token          Token  `json:"token"`
+	Timestamp      int    `json:"timestamp"`
+	TotalVolume    string `json:"totalVolume"`
+	TotalVolumeUsd string `json:"totalVolumeUsd"`
+	TotalVolumeEth string `json:"totalVolumeEth"`
+	TotalTrades    string `json:"totalTrades"`
+	OpenPrice      string `json:"openPrice"`
+	ClosePrice     string `json:"closePrice"`
+	HigherPrice    string `json:"higherPrice"`
+	LowerPrice     string `json:"lowerPrice"`
+	AveragePrice   string `json:"averagePrice"`
+}
