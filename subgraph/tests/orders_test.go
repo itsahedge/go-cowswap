@@ -7,22 +7,19 @@ import (
 	"testing"
 )
 
-func Test_GetTokens(t *testing.T) {
+func Test_GetOrders(t *testing.T) {
 	gql_client, err := subgraph.NewSubgraphClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	vars := map[string]interface{}{
-		"orderBy":        "numberOfTrades",
+		"orderBy":        "id",
 		"orderDirection": "desc",
-		"first":          2,
-		//"block": map[string]interface{}{
-		//	"number": 15114083,
-		//},
+		"first":          5,
 	}
 
-	resp, err := gql_client.GetTokens(context.Background(), vars)
+	resp, err := gql_client.GetOrders(context.Background(), vars)
 	if err != nil {
 		t.Fatal(err)
 	}
