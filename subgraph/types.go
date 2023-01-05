@@ -5,11 +5,11 @@ type UserData struct {
 }
 
 type Users struct {
-	Users []User `json:"users,omitempty"`
+	Users []User `json:"users"`
 }
 
 type User struct {
-	ID                  string         `json:"id,omitempty"`
+	ID                  string         `json:"id"`
 	Address             string         `json:"address,omitempty"`
 	FirstTradeTimestamp int64          `json:"firstTradeTimestamp,omitempty"`
 	IsSolver            bool           `json:"isSolver,omitempty"`
@@ -22,12 +22,12 @@ type User struct {
 }
 
 type OrdersPlaced struct {
-	ID       *string `json:"id,omitempty"`
+	ID       *string `json:"id"`
 	IsSigned *bool   `json:"isSigned,omitempty"`
 }
 
 type Tokens struct {
-	Tokens []Token `json:"tokens,omitempty"`
+	Tokens []Token `json:"tokens"`
 }
 
 type Token struct {
@@ -46,7 +46,7 @@ type Token struct {
 }
 
 type Orders struct {
-	Orders []Order `json:"orders,omitempty"`
+	Orders []Order `json:"orders"`
 }
 
 type Order struct {
@@ -96,7 +96,7 @@ type Settlements struct {
 
 type Bundle struct {
 	ID          string `json:"id"`
-	EthPriceUSD string `json:"ethPriceUSD"`
+	EthPriceUSD string `json:"ethPriceUSD,omitempty"`
 }
 
 type Bundles struct {
@@ -109,22 +109,26 @@ type UniswapPools struct {
 
 type UniswapPool struct {
 	ID                     string       `json:"id"`
-	Liquidity              string       `json:"liquidity"`
-	Token0Price            string       `json:"token0Price"`
-	Token1Price            string       `json:"token1Price"`
-	Tick                   string       `json:"tick"`
-	TotalValueLockedToken0 string       `json:"totalValueLockedToken0"`
-	TotalValueLockedToken1 string       `json:"totalValueLockedToken1"`
-	Token0                 UniswapToken `json:"token0"`
-	Token1                 UniswapToken `json:"token1"`
+	Liquidity              string       `json:"liquidity,omitempty"`
+	Token0Price            string       `json:"token0Price,omitempty"`
+	Token1Price            string       `json:"token1Price,omitempty"`
+	Tick                   string       `json:"tick,omitempty"`
+	TotalValueLockedToken0 string       `json:"totalValueLockedToken0,omitempty"`
+	TotalValueLockedToken1 string       `json:"totalValueLockedToken1,omitempty"`
+	Token0                 UniswapToken `json:"token0,omitempty"`
+	Token1                 UniswapToken `json:"token1,omitempty"`
 }
 
 type UniswapToken struct {
 	ID       string `json:"id"`
-	Address  string `json:"address"`
-	Name     string `json:"name"`
-	Symbol   string `json:"symbol"`
-	Decimals int    `json:"decimals"`
-	PriceEth string `json:"priceEth"`
-	PriceUsd string `json:"priceUsd"`
+	Address  string `json:"address,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Symbol   string `json:"symbol,omitempty"`
+	Decimals int    `json:"decimals,omitempty"`
+	PriceEth string `json:"priceEth,omitempty"`
+	PriceUsd string `json:"priceUsd,omitempty"`
+}
+
+type UniswapTokens struct {
+	UniswapTokens []UniswapToken `json:"uniswapTokens"`
 }
