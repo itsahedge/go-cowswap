@@ -221,3 +221,16 @@ type TokenHourlyTotal struct {
 	LowerPrice     string `json:"lowerPrice"`
 	AveragePrice   string `json:"averagePrice"`
 }
+
+type TokenTradingEvents struct {
+	TokenTradingEvents []TokenTradingEvent `json:"tokenTradingEvents"`
+}
+
+type TokenTradingEvent struct {
+	ID        string `json:"id"`
+	Token     Token  `json:"token"`
+	Trade     Trade  `json:"trade"`
+	Timestamp int    `json:"timestamp"`
+	AmountEth string `json:"amountEth"`
+	AmountUsd string `json:"amountUsd"`
+}
