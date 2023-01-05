@@ -46,6 +46,12 @@ var ChainIds = map[string]int{
 	"xdai":    100,
 }
 
+var SubgraphConfig = map[string]string{
+	"mainnet": SUBGRAPH_MAINNET,
+	"goerli":  SUBGRAPH_GOERLI,
+	"xdai":    SUBGRAPH_GNOSIS_CHAIN,
+}
+
 var SigningSchemeConfig = map[string]string{
 	"mainnet": "eip712",
 	"goerli":  "ethsign",

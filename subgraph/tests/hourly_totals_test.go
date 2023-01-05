@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/itsahedge/go-cowswap/subgraph"
+	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func Test_GetHourlyTotals(t *testing.T) {
-	gql_client, err := subgraph.NewSubgraphClient()
+	gql_client, err := subgraph.NewSubgraphClient(util.SUBGRAPH_MAINNET)
 	if err != nil {
 		t.Fatal(err)
 	}
