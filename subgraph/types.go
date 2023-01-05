@@ -89,3 +89,7 @@ type Settlement struct {
 	Trades              []Trade `json:"trades,omitempty"`
 	Solver              User    `json:"solver,omitempty"`
 }
+
+type Settlements struct {
+	Settlements []Settlement `json:"settlements"`
+}
