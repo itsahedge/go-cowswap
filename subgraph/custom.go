@@ -5,11 +5,11 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-func (c *SubgraphClient) GetCustom(ctx context.Context, q string) (any, error) {
+func (s *Client) GetCustom(ctx context.Context, q string) (any, error) {
 
 	var respData any
 	req := graphql.NewRequest(q)
-	if err := c.GraphqlClient.Run(ctx, req, &respData); err != nil {
+	if err := s.GraphqlClient.Run(ctx, req, &respData); err != nil {
 		return nil, err
 	}
 	return respData, nil
