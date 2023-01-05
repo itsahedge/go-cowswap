@@ -252,3 +252,20 @@ type Pair struct {
 	VolumeTradedEth     string `json:"volumeTradedEth"`
 	VolumeTradedUsd     string `json:"volumeTradedUsd"`
 }
+
+type PairDailies struct {
+	PairDailies []PairDaily `json:"pairDailies"`
+}
+type PairDaily struct {
+	ID                  string `json:"id"`
+	Token0              Token  `json:"token0"`
+	Token1              Token  `json:"token1"`
+	Token0Price         string `json:"token0Price"`
+	Token1Price         string `json:"token1Price"`
+	Token0RelativePrice string `json:"token0relativePrice"`
+	Token1RelativePrice string `json:"token1relativePrice"`
+	VolumeToken0        string `json:"volumeToken0"`
+	VolumeToken1        string `json:"volumeToken1"`
+	VolumeTradedEth     string `json:"volumeTradedEth"`
+	VolumeTradedUsd     string `json:"volumeTradedUsd"`
+}
