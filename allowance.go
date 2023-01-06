@@ -7,12 +7,12 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	contract_binding "github.com/itsahedge/go-cowswap/pkg/contracts/generated"
-	"github.com/itsahedge/go-cowswap/util"
+	contract_binding "github.com/itsahedge/go-cowswap/contracts/generated"
 	"math/big"
 	"strconv"
 )
 
+// GetAllowance - Token allowance for owner
 func (c *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress string) (*big.Int, error) {
 	if ownerAddress == "" {
 		return nil, errors.New("must provide an Owner Address")
@@ -26,7 +26,7 @@ func (c *Client) GetAllowance(ctx context.Context, ownerAddress, tokenAddress st
 		return nil, err
 	}
 	owner := common.HexToAddress(ownerAddress)
-	spender := common.HexToAddress(util.GPv2_Vault_Relayer)
+	spender := common.HexToAddress(GPv2_Vault_Relayer)
 	allowance, err := contract.Allowance(&bind.CallOpts{Context: ctx}, owner, spender)
 	if err != nil {
 		return nil, err
@@ -39,6 +39,7 @@ type ApproveAllowance struct {
 	WalletAddress string `json:"wallet_address"`
 }
 
+// SetAllowance - Set token allowance for owner on CowSwap GPv2 Vault Relayer contract
 func (c *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount string) (*types.Transaction, error) {
 	if c.TransactionSigner == nil {
 		return nil, errors.New("transaction signer not initialized")
@@ -57,7 +58,7 @@ func (c *Client) SetAllowance(ctx context.Context, tokenAddress, tokenAmount str
 	if err != nil {
 		panic(err)
 	}
-	spender := common.HexToAddress(util.GPv2_Vault_Relayer)
+	spender := common.HexToAddress(GPv2_Vault_Relayer)
 	opts := &bind.TransactOpts{
 		Context: ctx,
 		Signer:  auth.Signer,

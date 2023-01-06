@@ -7,11 +7,10 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/itsahedge/go-cowswap/util"
 	"strings"
 )
 
-// SignOrder builds the CounterOrder from its Hash, Signs the Hash & Adds Signature
+// SignOrder - Sign the order & generate the signature
 func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
 	hash, err := c.Hash(order)
 	if err != nil {
@@ -25,7 +24,7 @@ func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
 	return order, nil
 }
 
-// Hash computes this counter order's hash.
+// Hash - generate the hash of an order
 func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 	var message = map[string]interface{}{
 		"sellToken":         o.SellToken,
@@ -42,10 +41,10 @@ func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 		"buyTokenBalance":   o.BuyTokenBalance,
 	}
 
-	domain := util.Domain
+	domain := Domain
 	domain.ChainId = math.NewHexOrDecimal256(c.ChainId.Int64())
 
-	typedData := util.TypedData
+	typedData := TypedData
 	typedData.Domain = domain
 	typedData.Message = message
 
@@ -61,7 +60,7 @@ func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 	return crypto.Keccak256Hash(rawData), nil
 }
 
-// SignHash sign the order hash with Transaction Signer Key
+// SignHash - sign the order hash with Transaction Signer Key
 func (c *Client) SignHash(hash []byte, pk *ecdsa.PrivateKey) ([]byte, error) {
 	signatureBytes, err := crypto.Sign(accounts.TextHash(hash), pk)
 	if err != nil {

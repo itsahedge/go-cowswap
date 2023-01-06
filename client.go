@@ -8,14 +8,13 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/itsahedge/go-cowswap/subgraph"
-	"github.com/itsahedge/go-cowswap/util"
 	"io/ioutil"
 	"math/big"
 	"net/http"
 )
 
 type Client struct {
-	Options util.ConfigOpts
+	Options ConfigOpts
 	Network string
 	Host    string
 
@@ -33,12 +32,13 @@ type Client struct {
 	Subgraph *subgraph.Client
 }
 
-func NewClient(options util.ConfigOpts) (*Client, error) {
+// NewClient - Client to interact with CowSwap
+func NewClient(options ConfigOpts) (*Client, error) {
 	client := &Client{
 		Options:          options,
 		Http:             &http.Client{},
-		Eip712OrderTypes: util.Eip712OrderTypes,
-		TypedDataDomain:  util.Domain,
+		Eip712OrderTypes: Eip712OrderTypes,
+		TypedDataDomain:  Domain,
 		Network:          options.Network,
 		Host:             options.Host,
 		RpcUrl:           options.RpcUrl,
@@ -55,14 +55,14 @@ func NewClient(options util.ConfigOpts) (*Client, error) {
 	return client, nil
 }
 
-func setClientNetwork(client *Client, options util.ConfigOpts) error {
+func setClientNetwork(client *Client, options ConfigOpts) error {
 	if options.Network != "" {
 		client.Network = options.Network
-		client.Host = util.HostConfig[options.Network]
-		chainId := util.ChainIds[options.Network]
+		client.Host = HostConfig[options.Network]
+		chainId := ChainIds[options.Network]
 		client.ChainIdInt = chainId
 		client.ChainId = big.NewInt(int64(chainId))
-		subgraph, err := subgraph.NewSubgraphClient(util.SubgraphConfig[options.Network])
+		subgraph, err := subgraph.NewSubgraphClient(SubgraphConfig[options.Network])
 		if err != nil {
 			return err
 		}
@@ -71,7 +71,7 @@ func setClientNetwork(client *Client, options util.ConfigOpts) error {
 	return nil
 }
 
-func setClientRPC(client *Client, options util.ConfigOpts) error {
+func setClientRPC(client *Client, options ConfigOpts) error {
 	if options.RpcUrl != "" {
 		client.RpcUrl = options.RpcUrl
 		ethClient, err := ethclient.Dial(client.RpcUrl)
@@ -88,7 +88,7 @@ func setClientRPC(client *Client, options util.ConfigOpts) error {
 	return nil
 }
 
-func setClientAuth(client *Client, options util.ConfigOpts) error {
+func setClientAuth(client *Client, options ConfigOpts) error {
 	if options.PrivateKey != "" {
 		transactionSigner, err := NewSigner(options.PrivateKey, client.ChainId)
 		if err != nil {

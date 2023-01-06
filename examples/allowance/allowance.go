@@ -4,16 +4,15 @@ import (
 	"context"
 	"fmt"
 	cowswap "github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"log"
 )
 
 func main() {
 	// Initialize the go-cowswap client on Goerli with default RPC
-	options := util.ConfigOpts{
+	options := cowswap.ConfigOpts{
 		Network:    "goerli",
-		Host:       util.HostConfig["goerli"],
-		RpcUrl:     util.RpcConfig["goerli"],
+		Host:       cowswap.HostConfig["goerli"],
+		RpcUrl:     cowswap.RpcConfig["goerli"],
 		EthAddress: "",
 		PrivateKey: "",
 	}

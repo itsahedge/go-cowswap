@@ -4,12 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func TestNewClient_Subgraph(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}

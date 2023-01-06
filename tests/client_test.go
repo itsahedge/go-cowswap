@@ -3,12 +3,11 @@ package go_cowswap_test
 import (
 	"context"
 	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func TestNewClient(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,11 +28,11 @@ func TestNewClient(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("current block: %v", block)
-	addressList := util.TOKEN_ADDRESSES[util.Options.Network]
+	addressList := go_cowswap.TOKEN_ADDRESSES[go_cowswap.Options.Network]
 	for s, s2 := range addressList {
 		t.Logf("%v, %v \n", s, s2)
 	}
-	resp, code, err := client.Version(context.Background())
+	resp, code, err := client.GetVersion(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

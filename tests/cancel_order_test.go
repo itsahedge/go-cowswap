@@ -8,7 +8,7 @@ import (
 )
 
 func Test_VerifySignCancelOrder(t *testing.T) {
-	client, err := go_cowswap.NewClient(util2.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func Test_VerifySignCancelOrder(t *testing.T) {
 }
 
 func Test_CancelOrder(t *testing.T) {
-	client, err := go_cowswap.NewClient(util2.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}

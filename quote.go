@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+func (c *Client) Quote(ctx context.Context, o *QuoteReq) (*QuoteResponse, int, error) {
+	endpoint := "/quote"
+	var dataRes QuoteResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, o)
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
+	}
+	return &dataRes, statusCode, nil
+}
+
 type QuoteReq struct {
 	SellToken           string `json:"sellToken"`
 	BuyToken            string `json:"buyToken"`
@@ -40,14 +50,4 @@ type QuoteResponse struct {
 	From       string    `json:"from"`
 	Expiration time.Time `json:"expiration"`
 	ID         int       `json:"id"`
-}
-
-func (c *Client) Quote(ctx context.Context, o *QuoteReq) (*QuoteResponse, int, error) {
-	endpoint := "/quote"
-	var dataRes QuoteResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, o)
-	if err != nil {
-		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
-	}
-	return &dataRes, statusCode, nil
 }

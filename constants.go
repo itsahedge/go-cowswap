@@ -1,4 +1,4 @@
-package util
+package go_cowswap
 
 const (
 	MAINNET_API        = "https://api.cow.fi/mainnet/api/v1"

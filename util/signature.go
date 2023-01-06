@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 )
 
-// SignTypedData Signs The TypedData
+// SignTypedData - Sign typed data
 func SignTypedData(typedData apitypes.TypedData, privateKey *ecdsa.PrivateKey) (sig []byte, err error) {
 	hash, err := EncodeForSigning(typedData)
 	if err != nil {
@@ -23,7 +23,7 @@ func SignTypedData(typedData apitypes.TypedData, privateKey *ecdsa.PrivateKey) (
 	return
 }
 
-// Encoding the data
+// EncodeForSigning - Encoding the typed data
 func EncodeForSigning(typedData apitypes.TypedData) (hash common.Hash, err error) {
 	domainSeparator, err := typedData.HashStruct("EIP712Domain", typedData.Domain.Map())
 	if err != nil {
@@ -38,6 +38,7 @@ func EncodeForSigning(typedData apitypes.TypedData) (hash common.Hash, err error
 	return
 }
 
+// VerifySig - Verify signature with recovered address
 func VerifySig(from, sigHex string, msg []byte) bool {
 	sig := hexutil.MustDecode(sigHex)
 	//msg = accounts.TextHash(msg)

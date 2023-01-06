@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+// GetAuction - The current batch auction that solvers should be solving right now. Includes the list of solvable orders, the block on which the batch was created, as well as prices for all tokens being traded (used for objective value computation)
+func (c *Client) GetAuction(ctx context.Context) (*AuctionResponse, int, error) {
+	endpoint := "/auction"
+	var dataRes AuctionResponse
+	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
+	}
+	return &dataRes, statusCode, nil
+}
+
 type AuctionResponse struct {
 	ID                    int `json:"id"`
 	Block                 int `json:"block"`
@@ -52,10 +63,13 @@ type AuctionResponse struct {
 	} `json:"prices"`
 }
 
-// GetAuction The current batch auction that solvers should be solving right now. Includes the list of solvable orders, the block on which the batch was created, as well as prices for all tokens being traded (used for objective value computation).
-func (c *Client) GetAuction(ctx context.Context) (*AuctionResponse, int, error) {
-	endpoint := "/auction"
-	var dataRes AuctionResponse
+// GetSolverAuctionById - The competition information by auction id
+func (c *Client) GetSolverAuctionById(ctx context.Context, auctionId int) (*SolverAuctionByIdResponse, int, error) {
+	if auctionId < 0 {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_auction_id", Description: "invalid auction id"}
+	}
+	endpoint := fmt.Sprintf("/solver_competition/%v", auctionId)
+	var dataRes SolverAuctionByIdResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
 		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
@@ -91,13 +105,13 @@ type SolverAuctionByIdResponse struct {
 	} `json:"solutions"`
 }
 
-// GetSolverAuctionById Returns the competition information by auction id.
-func (c *Client) GetSolverAuctionById(ctx context.Context, auctionId int) (*SolverAuctionByIdResponse, int, error) {
-	if auctionId < 0 {
-		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_auction_id", Description: "invalid auction id"}
+// GetSolverAuctionByTxHash - The competition information by transaction hash
+func (c *Client) GetSolverAuctionByTxHash(ctx context.Context, txHash string) (*SolverAuctionByTxHashResponse, int, error) {
+	if txHash == "" {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "invalid tx hash"}
 	}
-	endpoint := fmt.Sprintf("/solver_competition/%v", auctionId)
-	var dataRes SolverAuctionByIdResponse
+	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%s", txHash)
+	var dataRes SolverAuctionByTxHashResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {
 		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
@@ -131,18 +145,4 @@ type SolverAuctionByTxHashResponse struct {
 		} `json:"orders"`
 		CallData string `json:"callData"`
 	} `json:"solutions"`
-}
-
-// GetSolverAuctionByTxHash Returns the competition information by transaction hash.
-func (c *Client) GetSolverAuctionByTxHash(ctx context.Context, txHash string) (*SolverAuctionByTxHashResponse, int, error) {
-	if txHash == "" {
-		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "invalid tx hash"}
-	}
-	endpoint := fmt.Sprintf("/solver_competition/by_tx_hash/%s", txHash)
-	var dataRes SolverAuctionByTxHashResponse
-	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
-	if err != nil {
-		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
-	}
-	return &dataRes, statusCode, nil
 }
