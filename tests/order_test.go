@@ -3,12 +3,12 @@ package go_cowswap_test
 import (
 	"context"
 	"encoding/json"
-	go_cowswap2 "github.com/itsahedge/go-cowswap"
+	cowswap "github.com/itsahedge/go-cowswap"
 	"testing"
 )
 
 func TestClient_GetOrdersByUid(t *testing.T) {
-	client, err := go_cowswap2.NewClient(go_cowswap2.Options)
+	client, err := cowswap.NewClient(cowswap.Options)
 	uid := ""
 	res, code, err := client.GetOrdersByUid(context.Background(), uid)
 	if err != nil {
@@ -20,7 +20,7 @@ func TestClient_GetOrdersByUid(t *testing.T) {
 }
 
 func TestClient_GetOrdersByTxHash(t *testing.T) {
-	client, err := go_cowswap2.NewClient(go_cowswap2.Options)
+	client, err := cowswap.NewClient(cowswap.Options)
 	txHash := ""
 	res, code, err := client.GetOrdersByTxHash(context.Background(), txHash)
 	if err != nil {
@@ -32,9 +32,9 @@ func TestClient_GetOrdersByTxHash(t *testing.T) {
 }
 
 func TestClient_GetOrdersByUser(t *testing.T) {
-	client, err := go_cowswap2.NewClient(go_cowswap2.Options)
-	userAddress := go_cowswap2.Options.EthAddress
-	opts := &go_cowswap2.OrdersPaginated{
+	client, err := cowswap.NewClient(cowswap.Options)
+	userAddress := cowswap.Options.EthAddress
+	opts := &cowswap.OrdersPaginated{
 		Limit:  "3",
 		Offset: "1",
 	}
