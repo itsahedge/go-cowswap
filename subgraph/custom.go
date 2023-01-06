@@ -5,12 +5,12 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-func (s *Client) GetCustom(ctx context.Context, q string) (any, error) {
-
+func (s *Client) GetCustom(ctx context.Context, query string) (any, error) {
+	req := graphql.NewRequest(query)
+	req.Header.Set("Cache-Control", "no-cache")
 	var respData any
-	req := graphql.NewRequest(q)
 	if err := s.GraphqlClient.Run(ctx, req, &respData); err != nil {
 		return nil, err
 	}
-	return respData, nil
+	return &respData, nil
 }

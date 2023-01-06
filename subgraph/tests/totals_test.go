@@ -8,24 +8,23 @@ import (
 	"testing"
 )
 
-func Test_GetUsers(t *testing.T) {
+func Test_GetTotals(t *testing.T) {
 	gql_client, err := subgraph.NewSubgraphClient(util.SUBGRAPH_MAINNET)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	vars := map[string]interface{}{
-		"first": 1,
-		"block": map[string]interface{}{
-			"number": 15114083,
-		},
-	}
+	//vars := map[string]interface{}{
+	//	"orderBy":        "id",
+	//	"orderDirection": "desc",
+	//	"first":          5,
+	//}
 
-	users, err := gql_client.GetUsers(context.Background(), vars)
+	resp, err := gql_client.GetTotals(context.Background(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	r, _ := json.MarshalIndent(users, "", "  ")
+	r, _ := json.MarshalIndent(resp, "", "  ")
 	t.Logf("%v", string(r))
 }
