@@ -9,12 +9,7 @@ import (
 	"math/big"
 )
 
-type TransactionSigner struct {
-	PrivateKey   *ecdsa.PrivateKey
-	SignerPubKey common.Address
-	Auth         *bind.TransactOpts
-}
-
+// NewSigner - Creates a transaction signer with private key
 func NewSigner(privateKey string, chainId *big.Int) (*TransactionSigner, error) {
 	pk, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
@@ -36,4 +31,10 @@ func NewSigner(privateKey string, chainId *big.Int) (*TransactionSigner, error) 
 		Auth:         auth,
 	}
 	return signer, nil
+}
+
+type TransactionSigner struct {
+	PrivateKey   *ecdsa.PrivateKey
+	SignerPubKey common.Address
+	Auth         *bind.TransactOpts
 }

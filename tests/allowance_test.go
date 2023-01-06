@@ -4,17 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func TestClient_GetAllowance(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
-	ownerAddress := util.Options.EthAddress
-	tokenAddress := util.TOKEN_ADDRESSES["goerli"]["COW"]
+	ownerAddress := go_cowswap.Options.EthAddress
+	tokenAddress := go_cowswap.TOKEN_ADDRESSES["goerli"]["COW"]
 	allowance, err := client.GetAllowance(context.Background(), ownerAddress, tokenAddress)
 	if err != nil {
 		t.Fatalf("GetAllowance err: %v", err)
@@ -24,12 +23,12 @@ func TestClient_GetAllowance(t *testing.T) {
 }
 
 func TestClient_SetAllowance(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
 	tokenAmount := "0"
-	tokenToApprove := util.TOKEN_ADDRESSES["goerli"]["COW"]
+	tokenToApprove := go_cowswap.TOKEN_ADDRESSES["goerli"]["COW"]
 	tx, err := client.SetAllowance(context.Background(), tokenToApprove, tokenAmount)
 	if err != nil {
 		t.Fatalf("SetAllowance err : %v", err)

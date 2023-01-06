@@ -4,12 +4,7 @@ import (
 	"context"
 )
 
-type CancelOrderReq struct {
-	OrderUids     []string `json:"orderUids"`
-	Signature     string   `json:"signature"`
-	SigningScheme string   `json:"signingScheme"`
-}
-
+// CancelOrder - Cancel orders
 func (c *Client) CancelOrder(ctx context.Context, uid string) (*string, int, error) {
 	endpoint := "/orders"
 	signature, _, err := c.SignCancelOrder(uid)
@@ -28,4 +23,10 @@ func (c *Client) CancelOrder(ctx context.Context, uid string) (*string, int, err
 		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
+}
+
+type CancelOrderReq struct {
+	OrderUids     []string `json:"orderUids"`
+	Signature     string   `json:"signature"`
+	SigningScheme string   `json:"signingScheme"`
 }

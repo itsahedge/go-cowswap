@@ -4,12 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func TestClient_GetAuction(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	res, code, err := client.GetAuction(context.Background())
 	if err != nil {
 		t.Fatalf("GetAuction err: %v", err)
@@ -20,7 +19,7 @@ func TestClient_GetAuction(t *testing.T) {
 }
 
 func TestClient_GetSolverAuctionById(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	res, code, err := client.GetSolverAuctionById(context.Background(), 1)
 	if err != nil {
 		t.Fatalf("GetSolverAuctionById err: %v", err)
@@ -31,7 +30,7 @@ func TestClient_GetSolverAuctionById(t *testing.T) {
 }
 
 func TestClient_GetSolverAuctionByTxHash(t *testing.T) {
-	client, err := go_cowswap.NewClient(util.Options)
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
 	txHash := ""
 	res, code, err := client.GetSolverAuctionByTxHash(context.Background(), txHash)
 	if err != nil {

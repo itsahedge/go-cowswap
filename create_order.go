@@ -23,6 +23,7 @@ type CounterOrder struct {
 	From              string `json:"from,omitempty"`
 }
 
+// CreateOrder create a new order
 func (c *Client) CreateOrder(ctx context.Context, o *CounterOrder) (*string, int, error) {
 	if c.TransactionSigner == nil {
 		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_transaction_signer", Description: "invalid transaction signer"}

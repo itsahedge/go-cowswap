@@ -5,20 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	go_cowswap2 "github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
 	"strings"
 	"testing"
 )
 
 func TestClient_CreateOrder(t *testing.T) {
 	network := "goerli"
-	client, err := go_cowswap2.NewClient(util.Options)
+	client, err := go_cowswap2.NewClient(go_cowswap2.Options)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
-	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
+	sellToken := go_cowswap2.TOKEN_ADDRESSES[network]["WETH"]
+	buyToken := go_cowswap2.TOKEN_ADDRESSES[network]["COW"]
 	sellAmountBeforeFee := "10000000000000000" // 0.01 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
@@ -33,7 +32,7 @@ func TestClient_CreateOrder(t *testing.T) {
 		SellTokenBalance:    "erc20",
 		BuyTokenBalance:     "erc20",
 		PriceQuality:        "fast",
-		SigningScheme:       util.SigningSchemeConfig[network], // ethsign or eip712
+		SigningScheme:       go_cowswap2.SigningSchemeConfig[network], // ethsign or eip712
 		OnchainOrder:        false,
 		Kind:                "sell",
 		SellAmountBeforeFee: sellAmountBeforeFee,
@@ -74,7 +73,7 @@ func TestClient_CreateOrder(t *testing.T) {
 		PartiallyFillable: false,
 		SellTokenBalance:  "erc20",
 		BuyTokenBalance:   "erc20",
-		SigningScheme:     util.SigningSchemeConfig[network], // ethsign or eip712
+		SigningScheme:     go_cowswap2.SigningSchemeConfig[network], // ethsign or eip712
 		From:              strings.ToLower(from),
 	}
 
@@ -98,8 +97,8 @@ func TestClient_CreateOrder(t *testing.T) {
 }
 
 func CreateOrderHandler(client *go_cowswap2.Client, network string) (string, error) {
-	sellToken := util.TOKEN_ADDRESSES[network]["WETH"]
-	buyToken := util.TOKEN_ADDRESSES[network]["COW"]
+	sellToken := go_cowswap2.TOKEN_ADDRESSES[network]["WETH"]
+	buyToken := go_cowswap2.TOKEN_ADDRESSES[network]["COW"]
 	seeAmountBeforeFee := "10000000000000000" // 0.01 ETH
 	receiver := client.TransactionSigner.SignerPubKey.Hex()
 	from := client.TransactionSigner.SignerPubKey.Hex()
@@ -114,7 +113,7 @@ func CreateOrderHandler(client *go_cowswap2.Client, network string) (string, err
 		SellTokenBalance:    "erc20",
 		BuyTokenBalance:     "erc20",
 		PriceQuality:        "fast",
-		SigningScheme:       util.SigningSchemeConfig[network], // ethsign or eip712
+		SigningScheme:       go_cowswap2.SigningSchemeConfig[network], // ethsign or eip712
 		OnchainOrder:        false,
 		Kind:                "sell",
 		SellAmountBeforeFee: seeAmountBeforeFee,
@@ -156,7 +155,7 @@ func CreateOrderHandler(client *go_cowswap2.Client, network string) (string, err
 		PartiallyFillable: false,
 		SellTokenBalance:  "erc20",
 		BuyTokenBalance:   "erc20",
-		SigningScheme:     util.SigningSchemeConfig[network], // ethsign or eip712
+		SigningScheme:     go_cowswap2.SigningSchemeConfig[network], // ethsign or eip712
 		From:              strings.ToLower(from),
 	}
 

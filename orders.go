@@ -42,6 +42,7 @@ type OrderByUidResponse struct {
 	OnchainUser string `json:"onchainUser"`
 }
 
+// GetOrdersByUid - Get existing order from UID
 func (c *Client) GetOrdersByUid(ctx context.Context, uid string) (*OrderByUidResponse, int, error) {
 	if uid == "" {
 		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_order_id", Description: "order UID not provided"}
@@ -90,6 +91,7 @@ type OrdersByTxHashResponse []struct {
 	} `json:"interactions"`
 }
 
+// GetOrdersByTxHash - Get orders by settlement transaction hash
 func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
 	if txHash == "" {
 		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "transaction hash not provided"}
@@ -142,6 +144,7 @@ type OrdersByUserResponse []struct {
 	} `json:"interactions"`
 }
 
+// GetOrdersByUser - Get orders of a user paginated
 func (c *Client) GetOrdersByUser(ctx context.Context, userAddress string, opts *OrdersPaginated) (*OrdersByUserResponse, int, error) {
 	if userAddress == "" {
 		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_user_address", Description: "user address not provided"}

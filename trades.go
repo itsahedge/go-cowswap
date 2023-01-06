@@ -5,24 +5,7 @@ import (
 	"fmt"
 )
 
-type GetTrades struct {
-	Owner    string
-	OrderUid string
-}
-type TradesResponse []struct {
-	BlockNumber          int    `json:"blockNumber"`
-	LogIndex             int    `json:"logIndex"`
-	OrderUID             string `json:"orderUid"`
-	BuyAmount            string `json:"buyAmount"`
-	SellAmount           string `json:"sellAmount"`
-	SellAmountBeforeFees string `json:"sellAmountBeforeFees"`
-	Owner                string `json:"owner"`
-	BuyToken             string `json:"buyToken"`
-	SellToken            string `json:"sellToken"`
-	TxHash               string `json:"txHash"`
-}
-
-// GetTrades Exactly one of owner or order_uid has to be set.
+// GetTrades - Get trades for an owner or order_uid
 func (c *Client) GetTrades(ctx context.Context, opts *GetTrades) (*TradesResponse, int, error) {
 	endpoint := "/trades"
 	if opts == nil {
@@ -45,4 +28,22 @@ func (c *Client) GetTrades(ctx context.Context, opts *GetTrades) (*TradesRespons
 		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
 	}
 	return &dataRes, statusCode, nil
+}
+
+type GetTrades struct {
+	Owner    string
+	OrderUid string
+}
+
+type TradesResponse []struct {
+	BlockNumber          int    `json:"blockNumber"`
+	LogIndex             int    `json:"logIndex"`
+	OrderUID             string `json:"orderUid"`
+	BuyAmount            string `json:"buyAmount"`
+	SellAmount           string `json:"sellAmount"`
+	SellAmountBeforeFees string `json:"sellAmountBeforeFees"`
+	Owner                string `json:"owner"`
+	BuyToken             string `json:"buyToken"`
+	SellToken            string `json:"sellToken"`
+	TxHash               string `json:"txHash"`
 }

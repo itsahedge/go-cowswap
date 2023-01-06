@@ -9,6 +9,7 @@ type NativePriceResponse struct {
 	Price float64 `json:"price"`
 }
 
+// GetNativePrice - Get native price for given token
 func (c *Client) GetNativePrice(ctx context.Context, tokenAddress string) (*NativePriceResponse, int, error) {
 	endpoint := fmt.Sprintf("/token/%s/native_price", tokenAddress)
 	var dataRes NativePriceResponse

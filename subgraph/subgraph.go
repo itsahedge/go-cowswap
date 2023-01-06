@@ -1,7 +1,7 @@
 package subgraph
 
 import (
-	"github.com/itsahedge/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap"
 	"github.com/machinebox/graphql"
 )
 
@@ -10,7 +10,7 @@ type Client struct {
 }
 
 func NewSubgraphClient() (*Client, error) {
-	gql_client := graphql.NewClient(util.SUBGRAPH_MAINNET)
+	gql_client := graphql.NewClient(go_cowswap.SUBGRAPH_MAINNET)
 	client := &Client{
 		GraphqlClient: gql_client,
 	}
