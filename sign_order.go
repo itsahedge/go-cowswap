@@ -1,32 +1,33 @@
 package go_cowswap
 
 import (
-	"crypto/ecdsa"
 	"fmt"
-	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	"github.com/itsahedge/go-cowswap/util/signature-scheme/eip712"
+	"github.com/itsahedge/go-cowswap/util/signature-scheme/eth-sign"
 	"strings"
 )
 
-// SignOrder - Sign the order & generate the signature
-func (c *Client) SignOrder(order *CounterOrder) (*CounterOrder, error) {
-	hash, err := c.Hash(order)
-	if err != nil {
-		return nil, fmt.Errorf("computing order hash: %v\n", err)
-	}
-	signatureBytes, err := c.SignHash(hash.Bytes(), c.TransactionSigner.PrivateKey)
-	if err != nil {
-		return nil, fmt.Errorf("signing order hash: %v\n", err)
-	}
-	order.Signature = fmt.Sprintf("0x%s", common.Bytes2Hex(signatureBytes))
-	return order, nil
+type SignOrderFunc func(*Client, *CounterOrder) (string, *apitypes.TypedData, error)
+
+var signOrderFuncs = map[string]SignOrderFunc{
+	"ethsign": SignEthSignOrder,
+	"eip712":  SignEip712Order,
 }
 
-// Hash - generate the hash of an order
-func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
-	var message = map[string]interface{}{
+func (c *Client) SignOrder(o *CounterOrder) (string, *apitypes.TypedData, error) {
+	signFunc, ok := signOrderFuncs[o.SigningScheme]
+	if !ok {
+		return "", nil, fmt.Errorf("invalid signing scheme: %s", o.SigningScheme)
+	}
+	return signFunc(c, o)
+}
+
+// SignEthSignOrder Signs order with eth_sign signing scheme
+func SignEthSignOrder(c *Client, o *CounterOrder) (string, *apitypes.TypedData, error) {
+	message := map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
 		"receiver":          o.Receiver,
@@ -40,39 +41,60 @@ func (c *Client) Hash(o *CounterOrder) (common.Hash, error) {
 		"sellTokenBalance":  o.SellTokenBalance,
 		"buyTokenBalance":   o.BuyTokenBalance,
 	}
-
-	domain := Domain
-	domain.ChainId = math.NewHexOrDecimal256(c.ChainId.Int64())
-
-	typedData := TypedData
-	typedData.Domain = domain
-	typedData.Message = message
-
-	domainSeparator, err := typedData.HashStruct("EIP712Domain", typedData.Domain.Map())
-	if err != nil {
-		return common.Hash{}, fmt.Errorf("computing domain separator: %v\n", err)
+	domain := apitypes.TypedDataDomain{
+		Name:              "Gnosis Protocol",
+		Version:           "v2",
+		ChainId:           math.NewHexOrDecimal256(c.ChainId.Int64()), // NETWORK ID
+		VerifyingContract: GPv2Settlement,
 	}
-	typedDataHash, err := typedData.HashStruct(typedData.PrimaryType, typedData.Message)
-	if err != nil {
-		return common.Hash{}, fmt.Errorf("computing typed data hash: %v\n", err)
+	typedData := apitypes.TypedData{
+		Types:       Eip712OrderTypes,
+		PrimaryType: "Order",
+		Domain:      domain,
+		Message:     message,
 	}
-	rawData := []byte(fmt.Sprintf("\x19\x01%s%s", string(domainSeparator), string(typedDataHash)))
-	return crypto.Keccak256Hash(rawData), nil
+
+	sigBytes, err := eth_sign.SignEthSign(typedData, c.TransactionSigner.PrivateKey)
+	if err != nil {
+		return "", nil, err
+	}
+	signature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
+	return signature, &typedData, nil
 }
 
-// SignHash - sign the order hash with Transaction Signer Key
-func (c *Client) SignHash(hash []byte, pk *ecdsa.PrivateKey) ([]byte, error) {
-	signatureBytes, err := crypto.Sign(accounts.TextHash(hash), pk)
-	if err != nil {
-		return nil, err
+// SignEip712Order Signs order with EIP712 signing scheme
+func SignEip712Order(c *Client, o *CounterOrder) (string, *apitypes.TypedData, error) {
+	message := map[string]interface{}{
+		"sellToken":         o.SellToken,
+		"buyToken":          o.BuyToken,
+		"receiver":          o.Receiver,
+		"sellAmount":        o.SellAmount,
+		"buyAmount":         o.BuyAmount,
+		"validTo":           fmt.Sprintf("%d", o.ValidTo),
+		"appData":           common.Hex2Bytes(strings.TrimPrefix(o.AppData, "0x")),
+		"feeAmount":         o.FeeAmount,
+		"kind":              o.Kind,
+		"partiallyFillable": o.PartiallyFillable,
+		"sellTokenBalance":  o.SellTokenBalance,
+		"buyTokenBalance":   o.BuyTokenBalance,
+	}
+	domain := apitypes.TypedDataDomain{
+		Name:              "Gnosis Protocol",
+		Version:           "v2",
+		ChainId:           math.NewHexOrDecimal256(c.ChainId.Int64()),
+		VerifyingContract: GPv2Settlement,
+	}
+	typedData := apitypes.TypedData{
+		Types:       Eip712OrderTypes,
+		PrimaryType: "Order",
+		Domain:      domain,
+		Message:     message,
 	}
 
-	vParam := signatureBytes[64]
-	if vParam == byte(0) {
-		vParam = byte(27)
-	} else if vParam == byte(1) {
-		vParam = byte(28)
+	sigBytes, err := eip712.SignTypedData(typedData, c.TransactionSigner.PrivateKey)
+	if err != nil {
+		return "", nil, err
 	}
-	signatureBytes[64] = vParam
-	return signatureBytes, nil
+	orderSignature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
+	return orderSignature, &typedData, nil
 }

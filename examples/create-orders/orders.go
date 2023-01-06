@@ -1,19 +1,29 @@
-package go_cowswap
+package main
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	cowswap "github.com/itsahedge/go-cowswap"
+	"log"
 	"strings"
-	"testing"
 )
 
-func TestClient_CreateOrder(t *testing.T) {
-	network := "goerli"
-	client, err := cowswap.NewClient(cowswap.Options)
-	if err != nil {
-		t.Fatal(err)
+func main() {
+	// Initialize the go-cowswap client on Goerli with default RPC
+	options := cowswap.ConfigOpts{
+		Network:    "goerli",
+		Host:       cowswap.HostConfig["goerli"],
+		RpcUrl:     cowswap.RpcConfig["goerli"],
+		EthAddress: "",
+		PrivateKey: "",
 	}
+	client, err := cowswap.NewClient(options)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx := context.Background()
+
+	network := options.Network
 
 	sellToken := cowswap.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := cowswap.TOKEN_ADDRESSES[network]["COW"]
@@ -39,13 +49,11 @@ func TestClient_CreateOrder(t *testing.T) {
 		From:                strings.ToLower(from),
 	}
 
-	quoteResp, code, err := client.Quote(context.Background(), quoteReq)
+	quoteResp, code, err := client.Quote(ctx, quoteReq)
 	if err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
-	r, _ := json.MarshalIndent(quoteResp, "", "  ")
-	t.Logf("statusCode: %v", code)
-	t.Logf("%v", string(r))
+	fmt.Printf("status: %v \nresp: %v", code, quoteResp)
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
 	buyAmountFromQuote := quoteResp.Quote.BuyAmount
@@ -71,21 +79,20 @@ func TestClient_CreateOrder(t *testing.T) {
 	}
 
 	if client.TransactionSigner == nil {
-		t.Fatalf("transaction signer was not initialized: %v", err)
+		log.Fatalf("transaction signer was not initialized: %v", err)
 	}
 
 	// 3) Sign the order
 	sig, _, err := client.SignOrder(order)
 	if err != nil {
-		t.Fatalf("SignOrder err: %v", err)
+		log.Fatal(err)
 	}
-	order.Signature = sig
 
-	// 4) Place Trade order
-	resp, code, err := client.CreateOrder(context.Background(), order)
+	// add the signature to the order:
+	order.Signature = sig
+	placed, code, err := client.CreateOrder(ctx, order)
 	if err != nil {
-		t.Fatal(err)
+		log.Fatalf("CreateOrderTest err: %v", err)
 	}
-	uid := *resp
-	t.Logf("order id: %v", uid)
+	fmt.Printf("order placed: %v", placed)
 }

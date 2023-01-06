@@ -4,6 +4,19 @@ import (
 	"context"
 )
 
+func (c *Client) CreateOrder(ctx context.Context, signedOrder *CounterOrder) (*string, int, error) {
+	if c.TransactionSigner == nil {
+		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_transaction_signer", Description: "invalid transaction signer"}
+	}
+	endpoint := "/orders"
+	var dataRes string
+	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, signedOrder)
+	if err != nil {
+		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
+	}
+	return &dataRes, statusCode, nil
+}
+
 // CounterOrder represents a Gnosis CounterOrder.
 type CounterOrder struct {
 	SellToken         string `json:"sellToken,omitempty"`
@@ -21,22 +34,4 @@ type CounterOrder struct {
 	SellTokenBalance  string `json:"sellTokenBalance,omitempty"`
 	BuyTokenBalance   string `json:"buyTokenBalance,omitempty"`
 	From              string `json:"from,omitempty"`
-}
-
-// CreateOrder create a new order
-func (c *Client) CreateOrder(ctx context.Context, o *CounterOrder) (*string, int, error) {
-	if c.TransactionSigner == nil {
-		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_transaction_signer", Description: "invalid transaction signer"}
-	}
-	signedOrder, err := c.SignOrder(o)
-	if err != nil {
-		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "sign_order_error", Description: err.Error()}
-	}
-	endpoint := "/orders"
-	var dataRes string
-	statusCode, err := c.doRequest(ctx, endpoint, "POST", &dataRes, signedOrder)
-	if err != nil {
-		return nil, statusCode, &ErrorCowResponse{Code: statusCode, ErrorType: "do_request_error", Description: err.Error()}
-	}
-	return &dataRes, statusCode, nil
 }

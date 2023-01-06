@@ -5,7 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/itsahedge/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap/util/signature-scheme/eip712"
 )
 
 // SignCancelOrder - Sign the order for cancellation & generate the order signature
@@ -22,7 +22,7 @@ func (c *Client) SignCancelOrder(uid string) (string, *apitypes.TypedData, error
 	TypedData.PrimaryType = "OrderCancellations"
 	TypedData.Domain = domain
 	TypedData.Message = message
-	sigBytes, err := util.SignTypedData(TypedData, c.TransactionSigner.PrivateKey)
+	sigBytes, err := eip712.SignTypedData(TypedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
 		return "", nil, err
 	}
