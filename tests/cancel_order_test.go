@@ -3,7 +3,7 @@ package go_cowswap
 import (
 	"context"
 	"github.com/itsahedge/go-cowswap"
-	"github.com/itsahedge/go-cowswap/util"
+	"github.com/itsahedge/go-cowswap/util/signature-scheme/eip712"
 	"testing"
 )
 
@@ -18,12 +18,12 @@ func Test_VerifySignCancelOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	////// CHECK SIGNATURE TO VERIFY OWNER
-	hash, err := util.EncodeForSigning(*typedData)
+	hash, err := eip712.EncodeForSigning(*typedData)
 	if err != nil {
 		t.Logf("encode for signing err: %v", err)
 	}
 	checkAddress := client.TransactionSigner.SignerPubKey
-	isOwner := util.VerifySig(checkAddress.Hex(), sig, hash.Bytes())
+	isOwner := eip712.VerifySig(checkAddress.Hex(), sig, hash.Bytes())
 	t.Logf("order signature: %v", sig)
 	t.Logf("typed data: %v", typedData)
 	t.Logf("signature owner is verified: %v \n", isOwner)

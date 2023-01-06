@@ -52,12 +52,6 @@ var SubgraphConfig = map[string]string{
 	"xdai":    SUBGRAPH_GNOSIS_CHAIN,
 }
 
-var SigningSchemeConfig = map[string]string{
-	"mainnet": "eip712",
-	"goerli":  "ethsign",
-	"xdai":    "ethsign",
-}
-
 var Eip712OrderTypes = apitypes.Types{
 	"EIP712Domain": {
 		{

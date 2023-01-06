@@ -1,4 +1,4 @@
-package util
+package eip712
 
 import (
 	"crypto/ecdsa"
