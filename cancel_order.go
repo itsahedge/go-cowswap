@@ -1,6 +1,5 @@
 package go_cowswap
 
-import "C"
 import (
 	"context"
 )
