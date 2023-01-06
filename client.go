@@ -8,7 +8,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/itsahedge/go-cowswap/subgraph"
-	"github.com/itsahedge/go-cowswap/util"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -63,7 +62,7 @@ func setClientNetwork(client *Client, options ConfigOpts) error {
 		chainId := ChainIds[options.Network]
 		client.ChainIdInt = chainId
 		client.ChainId = big.NewInt(int64(chainId))
-		subgraph, err := subgraph.NewSubgraphClient(util.SubgraphConfig[options.Network])
+		subgraph, err := subgraph.NewSubgraphClient(SubgraphConfig[options.Network])
 		if err != nil {
 			return err
 		}

@@ -3,13 +3,13 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	cowswap "github.com/itsahedge/go-cowswap"
 	"github.com/itsahedge/go-cowswap/subgraph"
-	"github.com/itsahedge/go-cowswap/util"
 	"testing"
 )
 
 func Test_GetPairDailies(t *testing.T) {
-	gql_client, err := subgraph.NewSubgraphClient(util.SUBGRAPH_MAINNET)
+	gql_client, err := subgraph.NewSubgraphClient(cowswap.SUBGRAPH_MAINNET)
 	if err != nil {
 		t.Fatal(err)
 	}
