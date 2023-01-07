@@ -8,7 +8,7 @@ import (
 	"github.com/itsahedge/go-cowswap/util/signature-scheme/eip712"
 )
 
-// SignCancelOrder - Sign the order for cancellation & generate the order signature
+// SignCancelOrder - Sign a single order for cancellation & generate the order signature
 func (c *Client) SignCancelOrder(uid string) (string, *apitypes.TypedData, error) {
 	var message = map[string]interface{}{
 		"orderUids": []any{uid},
@@ -23,6 +23,34 @@ func (c *Client) SignCancelOrder(uid string) (string, *apitypes.TypedData, error
 	TypedData.Domain = domain
 	TypedData.Message = message
 	sigBytes, err := eip712.SignTypedData(TypedData, c.TransactionSigner.PrivateKey)
+	if err != nil {
+		return "", nil, err
+	}
+	orderSignature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
+	return orderSignature, &TypedData, nil
+}
+
+// SignCancelOrders - Sign multiple orders for cancellation & generate the order signature
+func (c *Client) SignCancelOrders(uid []string) (string, *apitypes.TypedData, error) {
+	var uids []any
+	for _, id := range uid {
+		uids = append(uids, id)
+	}
+	message := map[string]interface{}{
+		"orderUids": uids,
+	}
+	domain := apitypes.TypedDataDomain{
+		Name:              "Gnosis Protocol",
+		Version:           "v2",
+		ChainId:           math.NewHexOrDecimal256(c.ChainId.Int64()),
+		VerifyingContract: GPv2Settlement,
+	}
+	typedData := apitypes.TypedData{
+		PrimaryType: "OrderCancellations",
+		Domain:      domain,
+		Message:     message,
+	}
+	sigBytes, err := eip712.SignTypedData(typedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
 		return "", nil, err
 	}

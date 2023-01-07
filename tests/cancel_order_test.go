@@ -42,3 +42,19 @@ func Test_CancelOrder(t *testing.T) {
 	t.Logf("status code: %v", statusCode)
 	t.Logf("res: %v", *res)
 }
+
+func Test_CancelOrders(t *testing.T) {
+	client, err := go_cowswap.NewClient(go_cowswap.Options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	uid_1 := ""
+	uid_2 := ""
+	uids := []string{uid_1, uid_2}
+	res, statusCode, err := client.CancelOrders(context.Background(), uids)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("status code: %v", statusCode)
+	t.Logf("res: %v", *res)
+}
