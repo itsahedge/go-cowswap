@@ -21,10 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if client.TransactionSigner == nil {
+		log.Fatalf("transaction signer was not initialized: %v", err)
+	}
 	ctx := context.Background()
-
 	network := options.Network
-
 	sellToken := cowswap.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := cowswap.TOKEN_ADDRESSES[network]["COW"]
 	sellAmountBeforeFee := "10000000000000000" // 0.01 ETH
@@ -53,7 +54,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("status: %v \nresp: %v", code, quoteResp)
+	fmt.Printf("status: %v \nresp: %v \n", code, quoteResp)
 
 	sellAmountFromQuote := quoteResp.Quote.SellAmount
 	buyAmountFromQuote := quoteResp.Quote.BuyAmount
@@ -78,21 +79,16 @@ func main() {
 		From:              strings.ToLower(from),
 	}
 
-	if client.TransactionSigner == nil {
-		log.Fatalf("transaction signer was not initialized: %v", err)
-	}
-
 	// 3) Sign the order
-	sig, _, err := client.SignOrder(order)
+	order, err = client.SignOrder(order)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	// add the signature to the order:
-	order.Signature = sig
+	//order.Signature = sig
 	placed, code, err := client.CreateOrder(ctx, order)
 	if err != nil {
 		log.Fatalf("CreateOrderTest err: %v", err)
 	}
-	fmt.Printf("order placed: %v", placed)
+	fmt.Printf("order placed: %v \n", placed)
 }
