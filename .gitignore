@@ -1,2 +1,2 @@
 .idea/
-cmd/go-cowswap/.env
+.env
