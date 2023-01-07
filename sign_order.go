@@ -10,23 +10,23 @@ import (
 	"strings"
 )
 
-type SignOrderFunc func(*Client, *CounterOrder) (string, *apitypes.TypedData, error)
+type SignOrderFunc func(*Client, *CounterOrder) (*CounterOrder, error)
 
 var signOrderFuncs = map[string]SignOrderFunc{
 	"ethsign": SignEthSignOrder,
 	"eip712":  SignEip712Order,
 }
 
-func (c *Client) SignOrder(o *CounterOrder) (string, *apitypes.TypedData, error) {
+func (c *Client) SignOrder(o *CounterOrder) (*CounterOrder, error) {
 	signFunc, ok := signOrderFuncs[o.SigningScheme]
 	if !ok {
-		return "", nil, fmt.Errorf("invalid signing scheme: %s", o.SigningScheme)
+		return nil, fmt.Errorf("invalid signing scheme: %s", o.SigningScheme)
 	}
 	return signFunc(c, o)
 }
 
 // SignEthSignOrder Signs order with eth_sign signing scheme
-func SignEthSignOrder(c *Client, o *CounterOrder) (string, *apitypes.TypedData, error) {
+func SignEthSignOrder(c *Client, o *CounterOrder) (*CounterOrder, error) {
 	message := map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
@@ -56,14 +56,15 @@ func SignEthSignOrder(c *Client, o *CounterOrder) (string, *apitypes.TypedData, 
 
 	sigBytes, err := eth_sign.SignEthSign(typedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 	signature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
-	return signature, &typedData, nil
+	o.Signature = signature
+	return o, nil
 }
 
 // SignEip712Order Signs order with EIP712 signing scheme
-func SignEip712Order(c *Client, o *CounterOrder) (string, *apitypes.TypedData, error) {
+func SignEip712Order(c *Client, o *CounterOrder) (*CounterOrder, error) {
 	message := map[string]interface{}{
 		"sellToken":         o.SellToken,
 		"buyToken":          o.BuyToken,
@@ -93,8 +94,9 @@ func SignEip712Order(c *Client, o *CounterOrder) (string, *apitypes.TypedData, e
 
 	sigBytes, err := eip712.SignTypedData(typedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
-	orderSignature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
-	return orderSignature, &typedData, nil
+	signature := fmt.Sprintf("0x%s", common.Bytes2Hex(sigBytes))
+	o.Signature = signature
+	return o, nil
 }

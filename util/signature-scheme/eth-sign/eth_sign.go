@@ -10,7 +10,7 @@ import (
 )
 
 func SignEthSign(typedData apitypes.TypedData, privateKey *ecdsa.PrivateKey) (sig []byte, err error) {
-	hash, err := encodeSigning(typedData)
+	hash, err := encodeForSigning(typedData)
 	if err != nil {
 		return
 	}
@@ -22,7 +22,7 @@ func SignEthSign(typedData apitypes.TypedData, privateKey *ecdsa.PrivateKey) (si
 	return
 }
 
-func encodeSigning(typedData apitypes.TypedData) (hash common.Hash, err error) {
+func encodeForSigning(typedData apitypes.TypedData) (hash common.Hash, err error) {
 	domainSeparator, err := typedData.HashStruct("EIP712Domain", typedData.Domain.Map())
 	if err != nil {
 		return
