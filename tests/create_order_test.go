@@ -14,6 +14,9 @@ func TestClient_CreateOrder(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if client.TransactionSigner == nil {
+		t.Fatalf("transaction signer was not initialized: %v", err)
+	}
 
 	sellToken := cowswap.TOKEN_ADDRESSES[network]["WETH"]
 	buyToken := cowswap.TOKEN_ADDRESSES[network]["COW"]
@@ -70,16 +73,11 @@ func TestClient_CreateOrder(t *testing.T) {
 		From:              strings.ToLower(from),
 	}
 
-	if client.TransactionSigner == nil {
-		t.Fatalf("transaction signer was not initialized: %v", err)
-	}
-
 	// 3) Sign the order
-	sig, _, err := client.SignOrder(order)
+	order, err = client.SignOrder(order)
 	if err != nil {
 		t.Fatalf("SignOrder err: %v", err)
 	}
-	order.Signature = sig
 
 	// 4) Place Trade order
 	resp, code, err := client.CreateOrder(context.Background(), order)
