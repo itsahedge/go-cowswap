@@ -1,4 +1,4 @@
-package go_cowswap_test
+package test
 
 import (
 	"context"

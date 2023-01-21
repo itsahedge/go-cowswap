@@ -56,12 +56,12 @@ type OrderByUidResponse struct {
 	OnchainUser string `json:"onchainUser"`
 }
 
-// GetOrdersByTxHash - Get orders by settlement transaction hash
-func (c *Client) GetOrdersByTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
+// GetOrdersBySettlementTxHash - Get orders by settlement transaction hash
+func (c *Client) GetOrdersBySettlementTxHash(ctx context.Context, txHash string) (*OrdersByTxHashResponse, int, error) {
 	if txHash == "" {
 		return nil, 404, &ErrorCowResponse{Code: 404, ErrorType: "invalid_tx_hash", Description: "transaction hash not provided"}
 	}
-	endpoint := fmt.Sprintf("%s/transactions/%s/orders", c.Host, txHash)
+	endpoint := fmt.Sprintf("/transactions/%s/orders", txHash)
 	var dataRes OrdersByTxHashResponse
 	statusCode, err := c.doRequest(ctx, endpoint, "GET", &dataRes, nil)
 	if err != nil {

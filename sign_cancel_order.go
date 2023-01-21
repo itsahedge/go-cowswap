@@ -39,18 +39,16 @@ func (c *Client) SignCancelOrders(uid []string) (string, *apitypes.TypedData, er
 	message := map[string]interface{}{
 		"orderUids": uids,
 	}
-	domain := apitypes.TypedDataDomain{
+	var domain = apitypes.TypedDataDomain{
 		Name:              "Gnosis Protocol",
 		Version:           "v2",
 		ChainId:           math.NewHexOrDecimal256(c.ChainId.Int64()),
 		VerifyingContract: GPv2Settlement,
 	}
-	typedData := apitypes.TypedData{
-		PrimaryType: "OrderCancellations",
-		Domain:      domain,
-		Message:     message,
-	}
-	sigBytes, err := eip712.SignTypedData(typedData, c.TransactionSigner.PrivateKey)
+	TypedData.PrimaryType = "OrderCancellations"
+	TypedData.Domain = domain
+	TypedData.Message = message
+	sigBytes, err := eip712.SignTypedData(TypedData, c.TransactionSigner.PrivateKey)
 	if err != nil {
 		return "", nil, err
 	}
