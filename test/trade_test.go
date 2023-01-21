@@ -1,4 +1,4 @@
-package go_cowswap_test
+package test
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 func TestClient_GetTrades(t *testing.T) {
 	client, err := cowswap.NewClient(cowswap.Options)
 	opts := &cowswap.GetTrades{
-		Owner: cowswap.Options.EthAddress,
+		Owner: "0xcea7fb5b582c07129b8dc2fec4d4e5435b0968ff",
 	}
 	res, code, err := client.GetTrades(context.Background(), opts)
 	if err != nil {

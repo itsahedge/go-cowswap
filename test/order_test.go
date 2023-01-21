@@ -33,7 +33,7 @@ func TestClient_GetOrdersBySettlementTxHash(t *testing.T) {
 
 func TestClient_GetOrdersByUser(t *testing.T) {
 	client, err := cowswap.NewClient(cowswap.Options)
-	userAddress := cowswap.Options.EthAddress
+	userAddress := "0xbd4ad46efbddb7a0bd1d65df2e84698e5ce0bdd4"
 	opts := &cowswap.OrdersPaginated{
 		Limit:  "3",
 		Offset: "1",
