@@ -11,14 +11,10 @@ import (
 )
 
 func main() {
-	// Initialize the go-cowswap client requires properly setting the ConfigOpts
-	// Set network: mainnet, goerli, xdai
+	// Setting the allowance for an Address requires private key to be set
 	network := "goerli"
-	// Set RPC url
 	rpc := "https://eth-goerli-rpc.gateway.pokt.network"
-	// set host: cowswap api url
 	host := "https://api.cow.fi/goerli/api/v1"
-	// Generate random PrivateKey
 	privateKey, err := crypto.GenerateKey()
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +27,6 @@ func main() {
 		log.Fatal("error casting public key to ECDSA")
 	}
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
-	// Set the Config options
 	options := cowswap.ConfigOpts{
 		Network:    network,
 		Host:       host,
@@ -44,14 +39,25 @@ func main() {
 		log.Fatal(err)
 	}
 	ctx := context.Background()
-	// Fetch the Chain ID and Block Number from the Client
-	chainId, err := client.EthClient.ChainID(ctx)
+
+	// First check the allowance for WETH
+	tokenAddress := "0x91056D4A53E1faa1A84306D4deAEc71085394bC8"
+	allowance, err := client.GetAllowance(ctx, address, tokenAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
-	block, err := client.EthClient.BlockNumber(ctx)
-	if err != nil {
-		log.Fatal(err)
+	// if token allowance: 0
+	if len(allowance.Bits()) == 0 {
+		fmt.Printf("%v token allowance is: %v. Please call Approve() \n", tokenAddress, allowance)
+		// if allowance is 0, set it.
+		tokenAmount := ""
+		setAllowanceTx, err := client.SetAllowance(ctx, tokenAddress, tokenAmount)
+		if err != nil {
+			fmt.Printf("setting allowance err: %v", err)
+		} else {
+			fmt.Printf("tx hash: %v", setAllowanceTx.Hash())
+		}
+	} else {
+		fmt.Printf("%v token allowance: %v \n", tokenAddress, allowance)
 	}
-	fmt.Printf("chaind ID: %v, block: %v", chainId, block)
 }
