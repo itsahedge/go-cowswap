@@ -1,4 +1,4 @@
-package go_cowswap_test
+package test
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 
 func TestClient_GetOrdersByUid(t *testing.T) {
 	client, err := cowswap.NewClient(cowswap.Options)
-	uid := ""
+	uid := "0x11bdfea6d0196279c372a58e1fa049e60d3812ce63ee37960d081e5f0e5004b875144248501e8629214cfdef09e1f0fe21bf83a563b8d8b2"
 	res, code, err := client.GetOrdersByUid(context.Background(), uid)
 	if err != nil {
 		t.Fatalf("GetOrderByUid err: %v", err)
@@ -19,12 +19,12 @@ func TestClient_GetOrdersByUid(t *testing.T) {
 	t.Logf("%v", string(r))
 }
 
-func TestClient_GetOrdersByTxHash(t *testing.T) {
+func TestClient_GetOrdersBySettlementTxHash(t *testing.T) {
 	client, err := cowswap.NewClient(cowswap.Options)
-	txHash := ""
-	res, code, err := client.GetOrdersByTxHash(context.Background(), txHash)
+	txHash := "0xa37a8f3d8bc60e75a40b967a53ef35f732eba8d6dba049d271593ccf58489d57"
+	res, code, err := client.GetOrdersBySettlementTxHash(context.Background(), txHash)
 	if err != nil {
-		t.Fatalf("GetOrdersByTxHash err: %v", err)
+		t.Fatalf("GetOrdersBySettlementTxHash err: %v", err)
 	}
 	r, _ := json.MarshalIndent(res, "", "  ")
 	t.Logf("statusCode: %v", code)
