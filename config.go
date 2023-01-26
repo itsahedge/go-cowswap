@@ -3,6 +3,8 @@ package go_cowswap
 import (
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	_ "github.com/joho/godotenv/autoload"
+	"os"
 )
 
 type ConfigOpts struct {
@@ -18,8 +20,8 @@ var Options = ConfigOpts{
 	Network:    "goerli",
 	Host:       HostConfig["goerli"],
 	RpcUrl:     RpcConfig["goerli"],
-	EthAddress: "",
-	PrivateKey: "",
+	EthAddress: os.Getenv("ETH_ADDRESS"),
+	PrivateKey: os.Getenv("PRIVATE_KEY"),
 }
 
 var TOKEN_ADDRESSES = map[string]map[string]string{
