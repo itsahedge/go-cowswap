@@ -43,7 +43,7 @@ options := ConfigOpts{
 ```
 
 #### Initializing with custom config
-To use default config, you only need to specify which network: `mainnet`, `goerli`, `xdai`
+To use custom config, you only need to specify which network: `mainnet`, `goerli`, `xdai`
 
 ```go
 // config.go
