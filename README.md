@@ -43,7 +43,7 @@ options := ConfigOpts{
 ```
 
 #### Initializing with custom config
-To use custom config, you only need to specify which network: `mainnet`, `goerli`, `xdai`
+To use custom config, you need to specify which network: `mainnet`, `goerli`, `xdai`, the host (cow api endpoint), and rpc
 
 ```go
 // config.go
